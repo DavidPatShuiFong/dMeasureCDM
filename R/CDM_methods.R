@@ -39,10 +39,10 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
   }
 
   a <- self$dM$appointments_list %>>%
-  {dplyr::filter(., InternalID %in%
-                   self$dM$diabetes_list(. %>>%
-                                           dplyr::select(InternalID, AppointmentDate) %>>%
-                                           dplyr::rename(Date = AppointmentDate)))} %>>%
+    {dplyr::filter(., InternalID %in%
+                     self$dM$diabetes_list(. %>>%
+                                             dplyr::select(InternalID, AppointmentDate) %>>%
+                                             dplyr::rename(Date = AppointmentDate)))} %>>%
     dplyr::select(c('InternalID', 'AppointmentDate', 'AppointmentTime', 'Provider')) %>>%
     dplyr::mutate(MBSName = c('DiabetesSIP'), Description = c('History : Diabetes'),
                   ServiceDate = as.Date(-Inf, origin = '1970-01-01'), MBSItem = NA) %>>%
@@ -63,10 +63,10 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
   }
 
   a <- self$dM$appointments_list %>>%
-  {dplyr::filter(., InternalID %in%
-                   self$dM$asthma_list(. %>>%
-                                         dplyr::select(InternalID, AppointmentDate) %>>%
-                                         dplyr::rename(Date = AppointmentDate)))} %>>%
+    {dplyr::filter(., InternalID %in%
+                     self$dM$asthma_list(. %>>%
+                                           dplyr::select(InternalID, AppointmentDate) %>>%
+                                           dplyr::rename(Date = AppointmentDate)))} %>>%
     dplyr::select(c('InternalID', 'AppointmentDate', 'AppointmentTime', 'Provider')) %>>%
     dplyr::mutate(MBSName = c('AsthmaSIP'), Description = c('History : Asthma'),
                   ServiceDate = as.Date(-Inf, origin = '1970-01-01'), MBSItem = NA) %>>%
@@ -87,10 +87,10 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
   }
 
   a <- self$dM$appointments_list %>>%
-  {dplyr::filter(., InternalID %in%
-                   self$dM$malignancy_list(. %>>%
-                                             dplyr::select(InternalID, AppointmentDate) %>>%
-                                             dplyr::rename(Date = AppointmentDate)))} %>>%
+    {dplyr::filter(., InternalID %in%
+                     self$dM$malignancy_list(. %>>%
+                                               dplyr::select(InternalID, AppointmentDate) %>>%
+                                               dplyr::rename(Date = AppointmentDate)))} %>>%
     dplyr::select(c('InternalID', 'AppointmentDate', 'AppointmentTime', 'Provider')) %>>%
     dplyr::mutate(MBSName = c('GPMP'), Description = c('History : Malignancy'),
                   ServiceDate = as.Date(-Inf, origin = '1970-01-01'), MBSItem = NA) %>>%
@@ -109,10 +109,10 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
   }
 
   a <- self$dM$appointments_list %>>%
-  {dplyr::filter(., InternalID %in%
-                   self$dM$hiv_list(. %>>%
-                                      dplyr::select(InternalID, AppointmentDate) %>>%
-                                      dplyr::rename(Date = AppointmentDate)))} %>>%
+    {dplyr::filter(., InternalID %in%
+                     self$dM$hiv_list(. %>>%
+                                        dplyr::select(InternalID, AppointmentDate) %>>%
+                                        dplyr::rename(Date = AppointmentDate)))} %>>%
     dplyr::select(c('InternalID', 'AppointmentDate', 'AppointmentTime', 'Provider')) %>>%
     dplyr::mutate(MBSName = c('GPMP'), Description = c('History : HIV'),
                   ServiceDate = as.Date(-Inf, origin = '1970-01-01'), MBSItem = NA) %>>%
@@ -131,10 +131,10 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
   }
 
   a <- self$dM$appointments_list %>>%
-  {dplyr::filter(., InternalID %in%
-                   self$dM$haemoglobinopathy_list(. %>>%
-                                                    dplyr::select(InternalID, AppointmentDate) %>>%
-                                                    dplyr::rename(Date = AppointmentDate)))} %>>%
+    {dplyr::filter(., InternalID %in%
+                     self$dM$haemoglobinopathy_list(. %>>%
+                                                      dplyr::select(InternalID, AppointmentDate) %>>%
+                                                      dplyr::rename(Date = AppointmentDate)))} %>>%
     dplyr::select(c('InternalID', 'AppointmentDate', 'AppointmentTime', 'Provider')) %>>%
     dplyr::mutate(MBSName = c('GPMP'), Description = c('History : Haemoglobinopathy'),
                   ServiceDate = as.Date(-Inf, origin = '1970-01-01'), MBSItem = NA) %>>%
@@ -153,10 +153,10 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
   }
 
   a <- self$dM$appointments_list %>>%
-  {dplyr::filter(., InternalID %in%
-                   self$dM$asplenic_list(. %>>%
-                                           dplyr::select(InternalID, AppointmentDate) %>>%
-                                           dplyr::rename(Date = AppointmentDate)))} %>>%
+    {dplyr::filter(., InternalID %in%
+                     self$dM$asplenic_list(. %>>%
+                                             dplyr::select(InternalID, AppointmentDate) %>>%
+                                             dplyr::rename(Date = AppointmentDate)))} %>>%
     dplyr::select(c('InternalID', 'AppointmentDate', 'AppointmentTime', 'Provider')) %>>%
     dplyr::mutate(MBSName = c('GPMP'), Description = c('History : Asplenia'),
                   ServiceDate = as.Date(-Inf, origin = '1970-01-01'), MBSItem = NA) %>>%
@@ -175,10 +175,10 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
   }
 
   a <- self$dM$appointments_list %>>%
-  {dplyr::filter(., InternalID %in%
-                   self$dM$transplant_list(. %>>%
-                                             dplyr::select(InternalID, AppointmentDate) %>>%
-                                             dplyr::rename(Date = AppointmentDate)))} %>>%
+    {dplyr::filter(., InternalID %in%
+                     self$dM$transplant_list(. %>>%
+                                               dplyr::select(InternalID, AppointmentDate) %>>%
+                                               dplyr::rename(Date = AppointmentDate)))} %>>%
     dplyr::select(c('InternalID', 'AppointmentDate', 'AppointmentTime', 'Provider')) %>>%
     dplyr::mutate(MBSName = c('GPMP'), Description = c('History : transplant'),
                   ServiceDate = as.Date(-Inf, origin = '1970-01-01'), MBSItem = NA) %>>%
@@ -197,10 +197,10 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
   }
 
   a <- self$dM$appointments_list %>>%
-  {dplyr::filter(., InternalID %in%
-                   self$dM$trisomy21_list(. %>>%
-                                            dplyr::select(InternalID, AppointmentDate) %>>%
-                                            dplyr::rename(Date = AppointmentDate)))} %>>%
+    {dplyr::filter(., InternalID %in%
+                     self$dM$trisomy21_list(. %>>%
+                                              dplyr::select(InternalID, AppointmentDate) %>>%
+                                              dplyr::rename(Date = AppointmentDate)))} %>>%
     dplyr::select(c('InternalID', 'AppointmentDate', 'AppointmentTime', 'Provider')) %>>%
     dplyr::mutate(MBSName = c('GPMP'), Description = c('History : Trisomy 21'),
                   ServiceDate = as.Date(-Inf, origin = '1970-01-01'), MBSItem = NA) %>>%
@@ -219,10 +219,10 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
   }
 
   a <- self$dM$appointments_list %>>%
-  {dplyr::filter(., InternalID %in%
-                   self$dM$chroniclungdisease_list(. %>>%
-                                                     dplyr::select(InternalID, AppointmentDate) %>>%
-                                                     dplyr::rename(Date = AppointmentDate)))} %>>%
+    {dplyr::filter(., InternalID %in%
+                     self$dM$chroniclungdisease_list(. %>>%
+                                                       dplyr::select(InternalID, AppointmentDate) %>>%
+                                                       dplyr::rename(Date = AppointmentDate)))} %>>%
     dplyr::select(c('InternalID', 'AppointmentDate', 'AppointmentTime', 'Provider')) %>>%
     dplyr::mutate(MBSName = c('GPMP'), Description = c('History : Chronic Lung Disease'),
                   ServiceDate = as.Date(-Inf, origin = '1970-01-01'), MBSItem = NA) %>>%
@@ -241,10 +241,10 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
   }
 
   a <- self$dM$appointments_list %>>%
-  {dplyr::filter(., InternalID %in%
-                   self$dM$neurologic_list(. %>>%
-                                             dplyr::select(InternalID, AppointmentDate) %>>%
-                                             dplyr::rename(Date = AppointmentDate)))} %>>%
+    {dplyr::filter(., InternalID %in%
+                     self$dM$neurologic_list(. %>>%
+                                               dplyr::select(InternalID, AppointmentDate) %>>%
+                                               dplyr::rename(Date = AppointmentDate)))} %>>%
     dplyr::select(c('InternalID', 'AppointmentDate', 'AppointmentTime', 'Provider')) %>>%
     dplyr::mutate(MBSName = c('GPMP'), Description = c('History : Neurologic condition'),
                   ServiceDate = as.Date(-Inf, origin = '1970-01-01'), MBSItem = NA) %>>%
@@ -263,10 +263,10 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
   }
 
   a <- self$dM$appointments_list %>>%
-  {dplyr::filter(., InternalID %in%
-                   self$dM$chronicliverdisease_list(. %>>%
-                                                      dplyr::select(InternalID, AppointmentDate) %>>%
-                                                      dplyr::rename(Date = AppointmentDate)))} %>>%
+    {dplyr::filter(., InternalID %in%
+                     self$dM$chronicliverdisease_list(. %>>%
+                                                        dplyr::select(InternalID, AppointmentDate) %>>%
+                                                        dplyr::rename(Date = AppointmentDate)))} %>>%
     dplyr::select(c('InternalID', 'AppointmentDate', 'AppointmentTime', 'Provider')) %>>%
     dplyr::mutate(MBSName = c('GPMP'), Description = c('History : Liver Disease'),
                   ServiceDate = as.Date(-Inf, origin = '1970-01-01'), MBSItem = NA) %>>%
@@ -285,10 +285,10 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
   }
 
   a <- self$dM$appointments_list %>>%
-  {dplyr::filter(., InternalID %in%
-                   self$dM$chronicrenaldisease_list(. %>>%
-                                                      dplyr::select(InternalID, AppointmentDate) %>>%
-                                                      dplyr::rename(Date = AppointmentDate)))} %>>%
+    {dplyr::filter(., InternalID %in%
+                     self$dM$chronicrenaldisease_list(. %>>%
+                                                        dplyr::select(InternalID, AppointmentDate) %>>%
+                                                        dplyr::rename(Date = AppointmentDate)))} %>>%
     dplyr::select(c('InternalID', 'AppointmentDate', 'AppointmentTime', 'Provider')) %>>%
     dplyr::mutate(MBSName = c('GPMP'), Description = c('History : Chronic Renal Disease'),
                   ServiceDate = as.Date(-Inf, origin = '1970-01-01'), MBSItem = NA) %>>%
@@ -307,10 +307,10 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
   }
 
   a <- self$dM$appointments_list %>>%
-  {dplyr::filter(., InternalID %in%
-                   self$dM$cardiacdisease_list(. %>>%
-                                                 dplyr::select(InternalID, AppointmentDate) %>>%
-                                                 dplyr::rename(Date = AppointmentDate)))} %>>%
+    {dplyr::filter(., InternalID %in%
+                     self$dM$cardiacdisease_list(. %>>%
+                                                   dplyr::select(InternalID, AppointmentDate) %>>%
+                                                   dplyr::rename(Date = AppointmentDate)))} %>>%
     dplyr::select(c('InternalID', 'AppointmentDate', 'AppointmentTime', 'Provider')) %>>%
     dplyr::mutate(MBSName = c('GPMP'), Description = c('History : Cardiac Disease'),
                   ServiceDate = as.Date(-Inf, origin = '1970-01-01'), MBSItem = NA) %>>%
@@ -340,6 +340,7 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 #' @param screentag_print (default TRUE) optionally add a 'printable' description of 'action'
 #'
 #' @return list of appointments (with patient details)
+#'  warning thrown if dates change due to subscription
 appointments_billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicians = NA,
                                       cdm_chosen = cdm_item_names,
                                       lazy = FALSE,
@@ -382,6 +383,20 @@ appointments_billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to =
             }
           } else {
             # only if EMR database is open
+
+            x <- self$dM$check_subscription(clinicians,
+                                            date_from, date_to,
+                                            adjustdate = TRUE)
+            # check subscription, which depends on selected
+            # clinicians and selected date range
+            # adjustdate is TRUE, so should provoke a change
+            # in the appointment list if in reactive environment
+            if (x$changedate) {
+              # this will happen if dates are changed
+              date_from <- x$date_from
+              date_to <- x$date_to
+              warning("A chosen user has no subscription for chosen date range. Dates changed (minimum one week old).")
+            }
 
             if (!lazy) {
               self$dMBillings$billed_appointments(date_from, date_to,
@@ -519,9 +534,9 @@ appointments_billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to =
               # gathers item numbers on the same day into a single row
               {if (screentag) {dplyr::summarise(., cdm = paste(mbstag, collapse = ""))}
                 else {.}} %>>%
-                {if (screentag_print) {dplyr::summarise(., cdm_print =
-                                                          paste(mbstag_print, collapse = ", "))}
-                  else {.}} %>>%
+              {if (screentag_print) {dplyr::summarise(., cdm_print =
+                                                        paste(mbstag_print, collapse = ", "))}
+                else {.}} %>>%
               dplyr::ungroup()
           }
 

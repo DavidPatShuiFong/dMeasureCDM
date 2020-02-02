@@ -27,6 +27,7 @@ appointments_billings_cdm(dMeasureCDM_obj, date_from = NA,
 }
 \value{
 list of appointments (with patient details)
+ warning thrown if dates change due to subscription
 }
 \description{
 filter to CDM item billed prior to (or on) the day of displayed appointments

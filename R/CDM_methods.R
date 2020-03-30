@@ -140,7 +140,7 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 ### asplenic list for CDM
 .public(dMeasureCDM, "asplenic_list_cdm", function(intID_list) {
 
-    a <- intID_list %>>%
+  a <- intID_list %>>%
     {dplyr::filter(., InternalID %in%
                      self$dM$asplenic_list(. %>>%
                                              dplyr::select(InternalID, AppointmentDate) %>>%
@@ -359,9 +359,13 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
             }
           } else {
             # only if EMR database is open
+            if (is.null(intID)) {adjust_days = 7} else {adjust_days = 90}
+            # if appointment view, minimum seven days old (if no valid subscription)
+            # if contact view, minimum ninety days old (if no valid subscription)
             x <- self$dM$check_subscription(clinicians,
                                             date_from, date_to,
-                                            adjustdate = TRUE)
+                                            adjustdate = TRUE,
+                                            adjust_days = adjust_days)
             # check subscription, which depends on selected
             # clinicians and selected date range
             # adjustdate is TRUE, so should provoke a change
@@ -370,7 +374,8 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
               # this will happen if dates are changed
               date_from <- x$date_from
               date_to <- x$date_to
-              warning("A chosen user has no subscription for chosen date range. Dates changed (minimum one week old).")
+              warning(paste("A chosen user has no subscription for chosen date range.",
+                            "Dates changed (minimum", adjust_days, "days old)."))
             }
 
             if (is.null(intID)) {
@@ -401,8 +406,8 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
 
             billings_list <- billings_list %>>%
               dplyr::select(intersect(names(billings_list),
-                            c('InternalID', 'AppointmentDate', 'AppointmentTime', 'Provider',
-                              'ServiceDate', 'MBSItem', 'Description'))) %>>%
+                                      c('InternalID', 'AppointmentDate', 'AppointmentTime', 'Provider',
+                                        'ServiceDate', 'MBSItem', 'Description'))) %>>%
               dplyr::mutate(MBSName = cdm_item$name[match(MBSItem, cdm_item$code)])
 
             if ("GPMP R/V" %in% cdm_chosen) {
@@ -469,7 +474,7 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
                 dplyr::select(InternalID, AppointmentDate, AppointmentTime, Provider, Age)
             } else {
               intID_list <- self$dM$db$patients %>>% # check the age of the intID list
-                dplyr::filter(InternalID %in% intID) %>>%
+                dplyr::filter(InternalID %in% c(intID, -1)) %>>%
                 dplyr::select(InternalID, DOB) %>>%
                 dplyr::collect() %>>%
                 dplyr::mutate(DOB = as.Date(DOB), Date = as.Date(intID_Date)) %>>%
@@ -552,7 +557,8 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
 
           if (!is.null(intID)) {
             billings_list <- billings_list %>>%
-              dplyr::select(InternalID, cdm_print)
+              dplyr::select(intersect(names(billings_list),
+                                      c("InternalID", "cdm", "cdm_print")))
           }
 
           return(billings_list)

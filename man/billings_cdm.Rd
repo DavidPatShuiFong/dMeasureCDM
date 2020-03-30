@@ -4,10 +4,18 @@
 \alias{billings_cdm}
 \title{CDM item status of patients in appointment view}
 \usage{
-billings_cdm(dMeasureCDM_obj, date_from = NA, date_to = NA,
-  clinicians = NA, intID = NULL, intID_Date = Sys.Date(),
-  cdm_chosen = cdm_item_names, lazy = FALSE, screentag = FALSE,
-  screentag_print = TRUE)
+billings_cdm(
+  dMeasureCDM_obj,
+  date_from = NA,
+  date_to = NA,
+  clinicians = NA,
+  intID = NULL,
+  intID_Date = Sys.Date(),
+  cdm_chosen = cdm_item_names,
+  lazy = FALSE,
+  screentag = FALSE,
+  screentag_print = TRUE
+)
 }
 \arguments{
 \item{dMeasureCDM_obj}{dMeasureCDM R6 object}

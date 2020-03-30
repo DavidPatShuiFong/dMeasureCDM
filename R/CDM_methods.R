@@ -28,12 +28,9 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 ##### fields ############################################################################
 
 ### AHA 75 (annual health assessment for those aged 75 years and above)
-.active(dMeasureCDM, "aha75_list_cdm", function(value) {
-  if (!missing(value)) {
-    stop("Can't set `$aha75_list_cdm`", call. = FALSE)
-  }
+.public(dMeasureCDM, "aha75_list_cdm", function(intID_list) {
 
-  self$dM$appointments_list %>>%
+  intID_list %>>%
     dplyr::filter(Age >= 75) %>>%
     dplyr::select(c('InternalID', 'AppointmentDate', 'AppointmentTime', 'Provider')) %>>%
     dplyr::mutate(MBSName = c('HA'), Description = c('Age 75 years or older'),
@@ -42,12 +39,9 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 })
 
 ### Diabetes list for CDM
-.active(dMeasureCDM, "diabetes_list_cdm", function(value) {
-  if (!missing(value)) {
-    stop("Can't set `$diabetes_list_cdm`", call. = FALSE)
-  }
+.public(dMeasureCDM, "diabetes_list_cdm", function(intID_list) {
 
-  a <- self$dM$appointments_list %>>%
+  a <- intID_list %>>%
     {dplyr::filter(., InternalID %in%
                      self$dM$diabetes_list(. %>>%
                                              dplyr::select(InternalID, AppointmentDate) %>>%
@@ -66,12 +60,9 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 })
 
 ### asthma list for CDM
-.active(dMeasureCDM, "asthma_list_cdm", function(value) {
-  if (!missing(value)) {
-    stop("Can't set `$asthma_list_cdm`", call. = FALSE)
-  }
+.public(dMeasureCDM, "asthma_list_cdm", function(intID_list) {
 
-  a <- self$dM$appointments_list %>>%
+  a <- intID_list %>>%
     {dplyr::filter(., InternalID %in%
                      self$dM$asthma_list(. %>>%
                                            dplyr::select(InternalID, AppointmentDate) %>>%
@@ -90,12 +81,9 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 })
 
 ### malignancy list for CDM
-.active(dMeasureCDM, "malignancy_list_cdm", function(value) {
-  if (!missing(value)) {
-    stop("Can't set `$malignancy_list_cdm`", call. = FALSE)
-  }
+.public(dMeasureCDM, "malignancy_list_cdm", function(intID_list) {
 
-  a <- self$dM$appointments_list %>>%
+  a <- intID_list %>>%
     {dplyr::filter(., InternalID %in%
                      self$dM$malignancy_list(. %>>%
                                                dplyr::select(InternalID, AppointmentDate) %>>%
@@ -112,12 +100,9 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 })
 
 ### hiv list for CDM
-.active(dMeasureCDM, "hiv_list_cdm", function(value) {
-  if (!missing(value)) {
-    stop("Can't set `$hiv_list_cdm`", call. = FALSE)
-  }
+.public(dMeasureCDM, "hiv_list_cdm", function(intID_list) {
 
-  a <- self$dM$appointments_list %>>%
+  a <- intID_list %>>%
     {dplyr::filter(., InternalID %in%
                      self$dM$hiv_list(. %>>%
                                         dplyr::select(InternalID, AppointmentDate) %>>%
@@ -134,12 +119,9 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 })
 
 ### haemoglobinopathy list for CDM
-.active(dMeasureCDM, "haemoglobinopathy_list_cdm", function(value) {
-  if (!missing(value)) {
-    stop("Can't set `$haemoglobinopathy_list_cdm`", call. = FALSE)
-  }
+.public(dMeasureCDM, "haemoglobinopathy_list_cdm", function(intID_list) {
 
-  a <- self$dM$appointments_list %>>%
+  a <- intID_list %>>%
     {dplyr::filter(., InternalID %in%
                      self$dM$haemoglobinopathy_list(. %>>%
                                                       dplyr::select(InternalID, AppointmentDate) %>>%
@@ -156,12 +138,9 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 })
 
 ### asplenic list for CDM
-.active(dMeasureCDM, "asplenic_list_cdm", function(value) {
-  if (!missing(value)) {
-    stop("Can't set `$asplenic_list_cdm`", call. = FALSE)
-  }
+.public(dMeasureCDM, "asplenic_list_cdm", function(intID_list) {
 
-  a <- self$dM$appointments_list %>>%
+    a <- intID_list %>>%
     {dplyr::filter(., InternalID %in%
                      self$dM$asplenic_list(. %>>%
                                              dplyr::select(InternalID, AppointmentDate) %>>%
@@ -178,12 +157,9 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 })
 
 ### transplant list for CDM
-.active(dMeasureCDM, "transplant_list_cdm", function(value) {
-  if (!missing(value)) {
-    stop("Can't set `$transplant_list_cdm`", call. = FALSE)
-  }
+.public(dMeasureCDM, "transplant_list_cdm", function(intID_list) {
 
-  a <- self$dM$appointments_list %>>%
+  a <- intID_list %>>%
     {dplyr::filter(., InternalID %in%
                      self$dM$transplant_list(. %>>%
                                                dplyr::select(InternalID, AppointmentDate) %>>%
@@ -200,12 +176,9 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 })
 
 ### trisomy21 list for CDM
-.active(dMeasureCDM, "trisomy21_list_cdm", function(value) {
-  if (!missing(value)) {
-    stop("Can't set `$trisomy21_list_cdm`", call. = FALSE)
-  }
+.public(dMeasureCDM, "trisomy21_list_cdm", function(intID_list) {
 
-  a <- self$dM$appointments_list %>>%
+  a <- intID_list %>>%
     {dplyr::filter(., InternalID %in%
                      self$dM$trisomy21_list(. %>>%
                                               dplyr::select(InternalID, AppointmentDate) %>>%
@@ -222,12 +195,9 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 })
 
 ### chroniclungdisease list for CDM
-.active(dMeasureCDM, "chroniclungdisease_list_cdm", function(value) {
-  if (!missing(value)) {
-    stop("Can't set `$chroniclungdisease_list_cdm`", call. = FALSE)
-  }
+.public(dMeasureCDM, "chroniclungdisease_list_cdm", function(intID_list) {
 
-  a <- self$dM$appointments_list %>>%
+  a <- intID_list %>>%
     {dplyr::filter(., InternalID %in%
                      self$dM$chroniclungdisease_list(. %>>%
                                                        dplyr::select(InternalID, AppointmentDate) %>>%
@@ -244,12 +214,9 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 })
 
 ### neurologic list for CDM
-.active(dMeasureCDM, "neurologic_list_cdm", function(value) {
-  if (!missing(value)) {
-    stop("Can't set `$neurologic_list_cdm`", call. = FALSE)
-  }
+.public(dMeasureCDM, "neurologic_list_cdm", function(intID_list) {
 
-  a <- self$dM$appointments_list %>>%
+  a <- intID_list %>>%
     {dplyr::filter(., InternalID %in%
                      self$dM$neurologic_list(. %>>%
                                                dplyr::select(InternalID, AppointmentDate) %>>%
@@ -266,12 +233,9 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 })
 
 ### chronic liver disease list for CDM
-.active(dMeasureCDM, "chronicliverdisease_list_cdm", function(value) {
-  if (!missing(value)) {
-    stop("Can't set `$chronicliverdisease_list_cdm`", call. = FALSE)
-  }
+.public(dMeasureCDM, "chronicliverdisease_list_cdm", function(intID_list) {
 
-  a <- self$dM$appointments_list %>>%
+  a <- intID_list %>>%
     {dplyr::filter(., InternalID %in%
                      self$dM$chronicliverdisease_list(. %>>%
                                                         dplyr::select(InternalID, AppointmentDate) %>>%
@@ -288,12 +252,9 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 })
 
 ### chronicrenaldisease list for CDM
-.active(dMeasureCDM, "chronicrenaldisease_list_cdm", function(value) {
-  if (!missing(value)) {
-    stop("Can't set `$chronicrenaldisease_list_cdm`", call. = FALSE)
-  }
+.public(dMeasureCDM, "chronicrenaldisease_list_cdm", function(intID_list) {
 
-  a <- self$dM$appointments_list %>>%
+  a <- intID_list %>>%
     {dplyr::filter(., InternalID %in%
                      self$dM$chronicrenaldisease_list(. %>>%
                                                         dplyr::select(InternalID, AppointmentDate) %>>%
@@ -310,12 +271,9 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 })
 
 ### cardiacdisease list for CDM
-.active(dMeasureCDM, "cardiacdisease_list_cdm", function(value) {
-  if (!missing(value)) {
-    stop("Can't set `$cardiacdisease_list_cdm`", call. = FALSE)
-  }
+.public(dMeasureCDM, "cardiacdisease_list_cdm", function(intID_list) {
 
-  a <- self$dM$appointments_list %>>%
+  a <- intID_list %>>%
     {dplyr::filter(., InternalID %in%
                      self$dM$cardiacdisease_list(. %>>%
                                                    dplyr::select(InternalID, AppointmentDate) %>>%
@@ -343,6 +301,8 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 #' @param date_from $date_a (from dMeasure) start date
 #' @param date_to $date_b end date (inclusive)
 #' @param clinicians $clinicians (from dMeasure) list of clinicians to view
+#' @param intID list of internal ID (default is NULL, in which case appointments_list is used)
+#' @param intID_Date if intID is not NULL, then date to check (default is Sys.Date())
 #' @param cdm_chosen (defaut cdm_item_names) item types to show, defaults to all available
 #' @param lazy if TRUE, then do not recalculate appointment list. otherwise, re-calculate
 #' @param screentag (default FALSE) optionally add a fomantic/semantic HTML description of 'action'
@@ -350,15 +310,17 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 #'
 #' @return list of appointments (with patient details)
 #'  warning thrown if dates change due to subscription
-appointments_billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicians = NA,
-                                      cdm_chosen = cdm_item_names,
-                                      lazy = FALSE,
-                                      screentag = FALSE, screentag_print = TRUE) {
-  dMeasureCDM_obj$appointments_billings_cdm(date_from, date_to, clinicians,
-                                            cdm_chosen, lazy, screentag, screentag_print)
+billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicians = NA,
+                         intID = NULL, intID_Date = Sys.Date(),
+                         cdm_chosen = cdm_item_names,
+                         lazy = FALSE,
+                         screentag = FALSE, screentag_print = TRUE) {
+  dMeasureCDM_obj$billings_cdm(date_from, date_to, clinicians, intID, intID_Date,
+                               cdm_chosen, lazy, screentag, screentag_print)
 }
-.public(dMeasureCDM, "appointments_billings_cdm",
+.public(dMeasureCDM, "billings_cdm",
         function (date_from = NA, date_to = NA, clinicians = NA,
+                  intID = NULL, intID_Date = Sys.Date(),
                   cdm_chosen = cdm_item_names,
                   lazy = FALSE,
                   screentag = FALSE, screentag_print = TRUE) {
@@ -381,18 +343,22 @@ appointments_billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to =
           if (!self$dM$emr_db$is_open()) {
             # EMR database is not open
             # create empty data-frame to return
-            appointments <- data.frame(InternalID = integer(),
-                                       AppointmentDate = as.Date(integer(0), origin = "1970-01-01"),
-                                       AppointmentTime = character(), Provider = character())
+            if (is.null(intID)) {
+              # appointment list
+              billings_list <- data.frame(InternalID = integer(),
+                                          AppointmentDate = as.Date(integer(0), origin = "1970-01-01"),
+                                          AppointmentTime = character(), Provider = character())
+            } else {
+              billings_list <- data.frame(InternalID = integer())
+            }
             if (screentag) {
-              appointments <- cbind(appointments, data.frame(cdm = character()))
+              billings_list <- cbind(billings_list, data.frame(cdm = character()))
             }
             if (screentag_print) {
-              appointments <- cbind(appointments, data.frame(cdm_print = character()))
+              billings_list <- cbind(billings_list, data.frame(cdm_print = character()))
             }
           } else {
             # only if EMR database is open
-
             x <- self$dM$check_subscription(clinicians,
                                             date_from, date_to,
                                             adjustdate = TRUE)
@@ -407,24 +373,40 @@ appointments_billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to =
               warning("A chosen user has no subscription for chosen date range. Dates changed (minimum one week old).")
             }
 
-            if (!lazy) {
-              self$dMBillings$billed_appointments(date_from, date_to,
-                                                  clinicians, lazy = FALSE)
-              # if not 'lazy' evaluation, then re-calculate self$appointments_billings
-              # (that is automatically done by calling the $billed_appointments method)
+            if (is.null(intID)) {
+              # appointment list
+              if (!lazy) {
+                self$dMBillings$billed_appointments(date_from, date_to,
+                                                    clinicians, lazy = FALSE)
+                # if not 'lazy' evaluation, then re-calculate self$appointments_billings
+                # (that is automatically done by calling the $billed_appointments method)
+              }
+              billings_list <- self$dMBillings$appointments_billings %>>%
+                dplyr::filter(MBSItem %in% cdm_item$code,
+                              # only chronic disease management items
+                              # only items billed before the appointment day
+                              ServiceDate <= AppointmentDate)
+            } else {
+              cdm_codes <- cdm_item$code
+              billings_list <- self$dM$db$services %>>%
+                dplyr::filter(InternalID %in% c(intID, -1),
+                              MBSItem %in% cdm_codes,
+                              ServiceDate <= intID_Date) %>>%
+                dplyr::collect() %>>%
+                dplyr::mutate(AppointmentDate = intID_Date, # will be used to compare ServiceDate
+                              ServiceDate = as.Date(ServiceDate),
+                              AppointmentTime = as.character(NA),
+                              Provider = as.character(NA)) # dummy columns, remove later
             }
 
-            appointments <- self$dMBillings$appointments_billings %>>%
-              dplyr::filter(MBSItem %in% cdm_item$code) %>>%
-              # only chronic disease management items
-              dplyr::filter(ServiceDate <= AppointmentDate) %>>%
-              # only items billed before the appointment day
-              dplyr::select(InternalID, AppointmentDate, AppointmentTime, Provider,
-                            ServiceDate, MBSItem, Description) %>>%
+            billings_list <- billings_list %>>%
+              dplyr::select(intersect(names(billings_list),
+                            c('InternalID', 'AppointmentDate', 'AppointmentTime', 'Provider',
+                              'ServiceDate', 'MBSItem', 'Description'))) %>>%
               dplyr::mutate(MBSName = cdm_item$name[match(MBSItem, cdm_item$code)])
 
             if ("GPMP R/V" %in% cdm_chosen) {
-              gpmprv <- appointments %>>%
+              gpmprv <- billings_list %>>%
                 # GPMP R/V tags.
                 # unlike other items, this is on a 3 month schedule, and can follow
                 # an item 'other' than itself (e.g. it can follow a GPMP or TCA)
@@ -482,22 +464,41 @@ appointments_billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to =
               gpmprv <- NULL
             }
 
-            appointments <- appointments %>>%
+            if (is.null(intID)) {
+              intID_list <- self$dM$appointments_list %>>%
+                dplyr::select(InternalID, AppointmentDate, AppointmentTime, Provider, Age)
+            } else {
+              intID_list <- self$dM$db$patients %>>% # check the age of the intID list
+                dplyr::filter(InternalID %in% intID) %>>%
+                dplyr::select(InternalID, DOB) %>>%
+                dplyr::collect() %>>%
+                dplyr::mutate(DOB = as.Date(DOB), Date = as.Date(intID_Date)) %>>%
+                # initially Date is a dttm (POSIXt) object,
+                # which makes the subsequent calc_age very slow,
+                # and throws up warnings
+                dplyr::mutate(Age = dMeasure::calc_age(DOB, Date),
+                              AppointmentDate = intID_Date,
+                              AppointmentTime = as.character(NA),
+                              Provider = as.character(NA)) %>>%
+                dplyr::select(-DOB)
+            }
+
+            billings_list <- billings_list %>>%
               dplyr::filter(!(MBSName == "GPMP R/V")) %>>% # GPMP R/V will be added back in as a 'tagged' version
-              rbind(self$diabetes_list_cdm) %>>%
-              rbind(self$asthma_list_cdm) %>>%
-              rbind(self$malignancy_list_cdm) %>>%
-              rbind(self$hiv_list_cdm) %>>%
-              rbind(self$haemoglobinopathy_list_cdm) %>>%
-              rbind(self$asplenic_list_cdm) %>>%
-              rbind(self$transplant_list_cdm) %>>%
-              rbind(self$chronicliverdisease_list_cdm) %>>%
-              rbind(self$chronicrenaldisease_list_cdm) %>>%
-              rbind(self$chroniclungdisease_list_cdm) %>>%
-              rbind(self$neurologic_list_cdm) %>>%
-              rbind(self$trisomy21_list_cdm) %>>%
-              rbind(self$cardiacdisease_list_cdm) %>>%
-              rbind(self$aha75_list_cdm) %>>%
+              rbind(self$diabetes_list_cdm(intID_list)) %>>%
+              rbind(self$asthma_list_cdm(intID_list)) %>>%
+              rbind(self$malignancy_list_cdm(intID_list)) %>>%
+              rbind(self$hiv_list_cdm(intID_list)) %>>%
+              rbind(self$haemoglobinopathy_list_cdm(intID_list)) %>>%
+              rbind(self$asplenic_list_cdm(intID_list)) %>>%
+              rbind(self$transplant_list_cdm(intID_list)) %>>%
+              rbind(self$chronicliverdisease_list_cdm(intID_list)) %>>%
+              rbind(self$chronicrenaldisease_list_cdm(intID_list)) %>>%
+              rbind(self$chroniclungdisease_list_cdm(intID_list)) %>>%
+              rbind(self$neurologic_list_cdm(intID_list)) %>>%
+              rbind(self$trisomy21_list_cdm(intID_list)) %>>%
+              rbind(self$cardiacdisease_list_cdm(intID_list)) %>>%
+              rbind(self$aha75_list_cdm(intID_list)) %>>%
               dplyr::filter(MBSName %in% cdm_chosen) %>>%
               dplyr::group_by(InternalID, AppointmentDate, AppointmentTime, Provider, MBSName) %>>%
               # group by patient, apppointment and CDM type (name)
@@ -506,7 +507,7 @@ appointments_billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to =
               dplyr::ungroup()
 
             if (screentag) {
-              appointments <- appointments %>>%
+              billings_list <- billings_list %>>%
                 dplyr::mutate(mbstag =
                                 dMeasure::semantic_tag(MBSName, # semantic/fomantic buttons
                                                        colour =
@@ -525,7 +526,7 @@ appointments_billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to =
             }
 
             if (screentag_print) {
-              appointments <- appointments %>>%
+              billings_list <- billings_list %>>%
                 dplyr::mutate(mbstag_print = paste0(MBSName, # printable version of information
                                                     dplyr::if_else(
                                                       ServiceDate == -Inf,
@@ -537,7 +538,7 @@ appointments_billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to =
                                                                " Overdue")))))
             }
 
-            appointments <- appointments %>>%
+            billings_list <- billings_list %>>%
               rbind(gpmprv) %>>% # add in GPMP reviews
               dplyr::group_by(InternalID, AppointmentDate, AppointmentTime, Provider) %>>%
               # gathers item numbers on the same day into a single row
@@ -549,5 +550,10 @@ appointments_billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to =
               dplyr::ungroup()
           }
 
-          return(appointments)
+          if (!is.null(intID)) {
+            billings_list <- billings_list %>>%
+              dplyr::select(InternalID, cdm_print)
+          }
+
+          return(billings_list)
         })

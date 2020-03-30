@@ -376,6 +376,8 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
               date_to <- x$date_to
               warning(paste("A chosen user has no subscription for chosen date range.",
                             "Dates changed (minimum", adjust_days, "days old)."))
+              intID_Date <- min(intID_Date - 90, Sys.Date() - 90)
+              # also examined item numbers will be a minimum 90 days old
             }
 
             if (is.null(intID)) {

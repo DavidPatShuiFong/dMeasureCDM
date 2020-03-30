@@ -9,9 +9,18 @@ NULL
 ##### constants #########################################################################
 # MBS (medicare benefits schedule) item numbers for CDM
 cdm_item <- data.frame(
-  code = c(721, 723, 732, 703, 705, 707, 2517, 2521, 2525, 2546, 2552, 2558, 2700, 2701, 2715, 2717),
-  name = c('GPMP', 'TCA', 'GPMP R/V', 'HA', 'HA', 'HA', 'DiabetesSIP', 'DiabetesSIP', 'DiabetesSIP',
-           'AsthmaSIP', 'AsthmaSIP', 'AsthmaSIP', 'MHCP', 'MHCP', 'MHCP', 'MHCP')
+  code = c(721, 92024, 92068, 723, 92025, 92069, 732, 92028, 92072,
+           703, 705, 707,
+           2517, 2521, 2525,
+           2546, 2552, 2558,
+           2700, 2701, 92112, 92124, 92113, 92125,
+           2715, 2717, 92116, 92128, 92117, 92129),
+  name = c('GPMP', 'GPMP', 'GPMP', 'TCA', 'TCA', 'TCA', 'GPMP R/V', 'GPMP R/v', 'GPMP R/V',
+           'HA', 'HA', 'HA',
+           'DiabetesSIP', 'DiabetesSIP', 'DiabetesSIP',
+           'AsthmaSIP', 'AsthmaSIP', 'AsthmaSIP',
+           'MHCP', 'MHCP', 'MHCP', 'MHCP', 'MHCP', 'MHCP',
+           'MHCP', 'MHCP', 'MHCP', 'MHCP', 'MHCP', 'MHCP')
 )
 
 cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique cdm_item$name

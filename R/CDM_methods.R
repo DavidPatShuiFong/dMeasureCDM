@@ -359,9 +359,9 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
             }
           } else {
             # only if EMR database is open
-            if (is.null(intID)) {adjust_days = 7} else {adjust_days = 90}
+            if (is.null(intID)) {adjust_days = 7} else {adjust_days = 120}
             # if appointment view, minimum seven days old (if no valid subscription)
-            # if contact view, minimum ninety days old (if no valid subscription)
+            # if contact view, minimum one hundred and twenty days old (if no valid subscription)
             x <- self$dM$check_subscription(clinicians,
                                             date_from, date_to,
                                             adjustdate = TRUE,
@@ -376,8 +376,8 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
               date_to <- x$date_to
               warning(paste("A chosen user has no subscription for chosen date range.",
                             "Dates changed (minimum", adjust_days, "days old)."))
-              intID_Date <- min(intID_Date - 90, Sys.Date() - 90)
-              # also examined item numbers will be a minimum 90 days old
+              intID_Date <- min(intID_Date, Sys.Date() - adjust_days)
+              # also examined item numbers will be a minimum 120 days old
             }
 
             if (is.null(intID)) {

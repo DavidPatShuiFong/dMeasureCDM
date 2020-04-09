@@ -2,4 +2,5 @@
 
 export("%>>%")
 export(dMeasureCDM)
+export(steps_introduction_df)
 importFrom(pipeR,"%>>%")

@@ -33,6 +33,7 @@ dMeasureCDM class
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-new"></a>}}
+\if{latex}{\out{\hypertarget{method-new}{}}}
 \subsection{Method \code{new()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$new(dMeasure_obj, dMeasureBillings_obj)}\if{html}{\out{</div>}}
@@ -41,6 +42,7 @@ dMeasureCDM class
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-aha75_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-aha75_list_cdm}{}}}
 \subsection{Method \code{aha75_list_cdm()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$aha75_list_cdm(intID_list)}\if{html}{\out{</div>}}
@@ -49,6 +51,7 @@ dMeasureCDM class
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-diabetes_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-diabetes_list_cdm}{}}}
 \subsection{Method \code{diabetes_list_cdm()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$diabetes_list_cdm(intID_list)}\if{html}{\out{</div>}}
@@ -57,6 +60,7 @@ dMeasureCDM class
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-asthma_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-asthma_list_cdm}{}}}
 \subsection{Method \code{asthma_list_cdm()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$asthma_list_cdm(intID_list)}\if{html}{\out{</div>}}
@@ -65,6 +69,7 @@ dMeasureCDM class
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-malignancy_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-malignancy_list_cdm}{}}}
 \subsection{Method \code{malignancy_list_cdm()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$malignancy_list_cdm(intID_list)}\if{html}{\out{</div>}}
@@ -73,6 +78,7 @@ dMeasureCDM class
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-hiv_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-hiv_list_cdm}{}}}
 \subsection{Method \code{hiv_list_cdm()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$hiv_list_cdm(intID_list)}\if{html}{\out{</div>}}
@@ -81,6 +87,7 @@ dMeasureCDM class
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-haemoglobinopathy_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-haemoglobinopathy_list_cdm}{}}}
 \subsection{Method \code{haemoglobinopathy_list_cdm()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$haemoglobinopathy_list_cdm(intID_list)}\if{html}{\out{</div>}}
@@ -89,6 +96,7 @@ dMeasureCDM class
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-asplenic_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-asplenic_list_cdm}{}}}
 \subsection{Method \code{asplenic_list_cdm()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$asplenic_list_cdm(intID_list)}\if{html}{\out{</div>}}
@@ -97,6 +105,7 @@ dMeasureCDM class
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-transplant_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-transplant_list_cdm}{}}}
 \subsection{Method \code{transplant_list_cdm()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$transplant_list_cdm(intID_list)}\if{html}{\out{</div>}}
@@ -105,6 +114,7 @@ dMeasureCDM class
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-trisomy21_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-trisomy21_list_cdm}{}}}
 \subsection{Method \code{trisomy21_list_cdm()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$trisomy21_list_cdm(intID_list)}\if{html}{\out{</div>}}
@@ -113,6 +123,7 @@ dMeasureCDM class
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-chroniclungdisease_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-chroniclungdisease_list_cdm}{}}}
 \subsection{Method \code{chroniclungdisease_list_cdm()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$chroniclungdisease_list_cdm(intID_list)}\if{html}{\out{</div>}}
@@ -121,6 +132,7 @@ dMeasureCDM class
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-neurologic_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-neurologic_list_cdm}{}}}
 \subsection{Method \code{neurologic_list_cdm()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$neurologic_list_cdm(intID_list)}\if{html}{\out{</div>}}
@@ -129,6 +141,7 @@ dMeasureCDM class
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-chronicliverdisease_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-chronicliverdisease_list_cdm}{}}}
 \subsection{Method \code{chronicliverdisease_list_cdm()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$chronicliverdisease_list_cdm(intID_list)}\if{html}{\out{</div>}}
@@ -137,6 +150,7 @@ dMeasureCDM class
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-chronicrenaldisease_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-chronicrenaldisease_list_cdm}{}}}
 \subsection{Method \code{chronicrenaldisease_list_cdm()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$chronicrenaldisease_list_cdm(intID_list)}\if{html}{\out{</div>}}
@@ -145,6 +159,7 @@ dMeasureCDM class
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-cardiacdisease_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-cardiacdisease_list_cdm}{}}}
 \subsection{Method \code{cardiacdisease_list_cdm()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$cardiacdisease_list_cdm(intID_list)}\if{html}{\out{</div>}}
@@ -153,6 +168,7 @@ dMeasureCDM class
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-billings_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-billings_cdm}{}}}
 \subsection{Method \code{billings_cdm()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$billings_cdm(
@@ -171,6 +187,7 @@ dMeasureCDM class
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-clone"></a>}}
+\if{latex}{\out{\hypertarget{method-clone}{}}}
 \subsection{Method \code{clone()}}{
 The objects of this class are cloneable with this method.
 \subsection{Usage}{

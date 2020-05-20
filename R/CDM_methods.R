@@ -340,7 +340,8 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 #' @param screentag_print (default TRUE) optionally add a 'printable' description of 'action'
 #'
 #' @return list of appointments (with patient details)
-#'  warning thrown if dates change due to subscription
+#'   returns empty dataframe if no valid subscription for chosen clinicians
+#'   and selected date-range
 billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicians = NA,
                          intID = NULL, intID_Date = Sys.Date(),
                          cdm_chosen = cdm_item_names,
@@ -373,18 +374,31 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
       clinicians <- c("") # dplyr::filter cannot handle empty list()
     }
 
-    if (!self$dM$emr_db$is_open()) {
-      # EMR database is not open
-      # create empty data-frame to return
+    return_empty_dataframe <- function(intID, screentag, screentag_print) {
       if (is.null(intID)) {
         # appointment list
         billings_list <- data.frame(
+          Patient = character(),
           InternalID = integer(),
+          DOB = as.Date(integer(0), origin = "1970-01-01"),
           AppointmentDate = as.Date(integer(0), origin = "1970-01-01"),
-          AppointmentTime = character(), Provider = character()
+          AppointmentTime = character(),
+          Status = character(),
+          Provider = character(),
+          ServiceDate = as.Date(integer(0), origin = "1970-01-01"),
+          MBSItem = numeric(0),
+          Description = character()
         )
       } else {
-        billings_list <- data.frame(InternalID = integer())
+        billings_list <- data.frame(
+          InternalID = integer(),
+          AppointmentDate = as.Date(integer(0), origin = "1970-01-01"),
+          AppointmentTime = character(),
+          Provider = character(),
+          ServiceDate = as.Date(integer(0), origin = "1970-01-01"),
+          MBSItem = numeric(0),
+          Description = character()
+        )
       }
       if (screentag) {
         billings_list <- cbind(billings_list, data.frame(cdm = character()))
@@ -392,6 +406,12 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
       if (screentag_print) {
         billings_list <- cbind(billings_list, data.frame(cdm_print = character()))
       }
+      return(billings_list)
+    }
+    if (!self$dM$emr_db$is_open()) {
+      # EMR database is not open
+      # create empty data-frame to return
+      billings_list <- return_empty_dataframe(intID, screentag, screentag_print)
     } else {
       # only if EMR database is open
       if (is.null(intID)) {
@@ -399,61 +419,54 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
       } else {
         adjust_days <- 120
       }
-      # if appointment view, minimum seven days old (if no valid subscription)
-      # if contact view, minimum one hundred and twenty days old (if no valid subscription)
+      # if appointment view and no valid subscription,
+      # minimum seven days old
+      # if contact view and no valid subscription,
+      # minimum one hundred and twenty days old
       x <- self$dM$check_subscription(clinicians,
         date_from, date_to,
-        adjustdate = TRUE,
         adjust_days = adjust_days
       )
       # check subscription, which depends on selected
       # clinicians and selected date range
-      # adjustdate is TRUE, so should provoke a change
-      # in the appointment list if in reactive environment
       if (x$changedate) {
-        # this will happen if dates are changed
-        date_from <- x$date_from
-        date_to <- x$date_to
-        warning(paste(
-          "A chosen user has no subscription for chosen date range.",
-          "Dates changed (minimum", adjust_days, "days old)."
-        ))
-        intID_Date <- min(intID_Date, Sys.Date() - adjust_days)
-        # also examined item numbers will be a minimum 120 days old
-      }
-
-      if (is.null(intID)) {
-        # appointment list
-        if (!lazy) {
-          self$dMBillings$billed_appointments(date_from, date_to,
-            clinicians,
-            lazy = FALSE
-          )
+        # if a user without valid subscription for chosen date range
+        # then return an empty dataframe
+        billings_list <- return_empty_dataframe(intID, screentag, screentag_print)
+      } else {
+        if (is.null(intID)) {
+          # appointment list
+          if (!lazy) {
+            self$dMBillings$billed_appointments(date_from, date_to,
+              clinicians,
+              lazy = FALSE
+            )
+          }
           # if not 'lazy' evaluation, then re-calculate self$appointments_billings
           # (that is automatically done by calling the $billed_appointments method)
+          billings_list <- self$dMBillings$appointments_billings %>>%
+            dplyr::filter(
+              MBSItem %in% cdm_item$code,
+              # only chronic disease management items
+              # only items billed before the appointment day
+              ServiceDate <= AppointmentDate
+            )
+        } else {
+          cdm_codes <- cdm_item$code
+          billings_list <- self$dM$db$services %>>%
+            dplyr::filter(
+              InternalID %in% c(intID, -1),
+              MBSItem %in% cdm_codes,
+              ServiceDate <= intID_Date
+            ) %>>%
+            dplyr::collect() %>>%
+            dplyr::mutate(
+              AppointmentDate = intID_Date, # will be used to compare ServiceDate
+              ServiceDate = as.Date(ServiceDate),
+              AppointmentTime = as.character(NA),
+              Provider = as.character(NA)
+            ) # dummy columns, remove later
         }
-        billings_list <- self$dMBillings$appointments_billings %>>%
-          dplyr::filter(
-            MBSItem %in% cdm_item$code,
-            # only chronic disease management items
-            # only items billed before the appointment day
-            ServiceDate <= AppointmentDate
-          )
-      } else {
-        cdm_codes <- cdm_item$code
-        billings_list <- self$dM$db$services %>>%
-          dplyr::filter(
-            InternalID %in% c(intID, -1),
-            MBSItem %in% cdm_codes,
-            ServiceDate <= intID_Date
-          ) %>>%
-          dplyr::collect() %>>%
-          dplyr::mutate(
-            AppointmentDate = intID_Date, # will be used to compare ServiceDate
-            ServiceDate = as.Date(ServiceDate),
-            AppointmentTime = as.character(NA),
-            Provider = as.character(NA)
-          ) # dummy columns, remove later
       }
 
       billings_list <- billings_list %>>%
@@ -540,49 +553,55 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
         gpmprv <- NULL
       }
 
-      if (is.null(intID)) {
-        intID_list <- self$dM$appointments_list %>>%
-          dplyr::select(InternalID, AppointmentDate, AppointmentTime, Provider, Age)
+      if (x$changedate) {
+        intID_list <- c(-1) # no valid subscription, don't do any searches!
       } else {
-        intID_list <- self$dM$db$patients %>>% # check the age of the intID list
-          dplyr::filter(InternalID %in% c(intID, -1)) %>>%
-          dplyr::select(InternalID, DOB) %>>%
-          dplyr::collect() %>>%
-          dplyr::mutate(DOB = as.Date(DOB), Date = as.Date(intID_Date)) %>>%
-          # initially Date is a dttm (POSIXt) object,
-          # which makes the subsequent calc_age very slow,
-          # and throws up warnings
-          dplyr::mutate(
-            Age = dMeasure::calc_age(DOB, Date),
-            AppointmentDate = intID_Date,
-            AppointmentTime = as.character(NA),
-            Provider = as.character(NA)
-          ) %>>%
-          dplyr::select(-DOB)
+        if (is.null(intID)) {
+          intID_list <- self$dM$appointments_list %>>%
+            dplyr::select(InternalID, AppointmentDate, AppointmentTime, Provider, Age)
+        } else {
+          intID_list <- self$dM$db$patients %>>% # check the age of the intID list
+            dplyr::filter(InternalID %in% c(intID, -1)) %>>%
+            dplyr::select(InternalID, DOB) %>>%
+            dplyr::collect() %>>%
+            dplyr::mutate(DOB = as.Date(DOB), Date = as.Date(intID_Date)) %>>%
+            # initially Date is a dttm (POSIXt) object,
+            # which makes the subsequent calc_age very slow,
+            # and throws up warnings
+            dplyr::mutate(
+              Age = dMeasure::calc_age(DOB, Date),
+              AppointmentDate = intID_Date,
+              AppointmentTime = as.character(NA),
+              Provider = as.character(NA)
+            ) %>>%
+            dplyr::select(-DOB)
+        }
       }
 
-      billings_list <- billings_list %>>%
-        dplyr::filter(!(MBSName == "GPMP R/V")) %>>% # GPMP R/V will be added back in as a 'tagged' version
-        rbind(self$diabetes_list_cdm(intID_list)) %>>%
-        rbind(self$asthma_list_cdm(intID_list)) %>>%
-        rbind(self$malignancy_list_cdm(intID_list)) %>>%
-        rbind(self$hiv_list_cdm(intID_list)) %>>%
-        rbind(self$haemoglobinopathy_list_cdm(intID_list)) %>>%
-        rbind(self$asplenic_list_cdm(intID_list)) %>>%
-        rbind(self$transplant_list_cdm(intID_list)) %>>%
-        rbind(self$chronicliverdisease_list_cdm(intID_list)) %>>%
-        rbind(self$chronicrenaldisease_list_cdm(intID_list)) %>>%
-        rbind(self$chroniclungdisease_list_cdm(intID_list)) %>>%
-        rbind(self$neurologic_list_cdm(intID_list)) %>>%
-        rbind(self$trisomy21_list_cdm(intID_list)) %>>%
-        rbind(self$cardiacdisease_list_cdm(intID_list)) %>>%
-        rbind(self$aha75_list_cdm(intID_list)) %>>%
-        dplyr::filter(MBSName %in% cdm_chosen) %>>%
-        dplyr::group_by(InternalID, AppointmentDate, AppointmentTime, Provider, MBSName) %>>%
-        # group by patient, apppointment and CDM type (name)
-        dplyr::filter(ServiceDate == max(ServiceDate, na.rm = TRUE)) %>>%
-        # only keep most recent service
-        dplyr::ungroup()
+      if (!x$changedate) { # only search if valid subscription!
+        billings_list <- billings_list %>>%
+          dplyr::filter(!(MBSName == "GPMP R/V")) %>>% # GPMP R/V will be added back in as a 'tagged' version
+          rbind(self$diabetes_list_cdm(intID_list)) %>>%
+          rbind(self$asthma_list_cdm(intID_list)) %>>%
+          rbind(self$malignancy_list_cdm(intID_list)) %>>%
+          rbind(self$hiv_list_cdm(intID_list)) %>>%
+          rbind(self$haemoglobinopathy_list_cdm(intID_list)) %>>%
+          rbind(self$asplenic_list_cdm(intID_list)) %>>%
+          rbind(self$transplant_list_cdm(intID_list)) %>>%
+          rbind(self$chronicliverdisease_list_cdm(intID_list)) %>>%
+          rbind(self$chronicrenaldisease_list_cdm(intID_list)) %>>%
+          rbind(self$chroniclungdisease_list_cdm(intID_list)) %>>%
+          rbind(self$neurologic_list_cdm(intID_list)) %>>%
+          rbind(self$trisomy21_list_cdm(intID_list)) %>>%
+          rbind(self$cardiacdisease_list_cdm(intID_list)) %>>%
+          rbind(self$aha75_list_cdm(intID_list)) %>>%
+          dplyr::filter(MBSName %in% cdm_chosen) %>>%
+          dplyr::group_by(InternalID, AppointmentDate, AppointmentTime, Provider, MBSName) %>>%
+          # group by patient, apppointment and CDM type (name)
+          dplyr::filter(ServiceDate == max(ServiceDate, na.rm = TRUE)) %>>%
+          # only keep most recent service
+          dplyr::ungroup()
+      }
 
       if (screentag) {
         billings_list <- billings_list %>>%

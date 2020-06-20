@@ -597,7 +597,11 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
           rbind(self$aha75_list_cdm(intID_list)) %>>%
           dplyr::filter(MBSName %in% cdm_chosen) %>>%
           dplyr::group_by(InternalID, AppointmentDate, AppointmentTime, Provider, MBSName) %>>%
-          # group by patient, apppointment and CDM type (name)
+          # group by patient, appointment and CDM type (name)
+          dplyr::mutate(Description = dMeasure::paste2(
+            Description, collapse = ", ", na.rm = TRUE
+          )) %>>%
+          # group the reasons/description together
           dplyr::filter(ServiceDate == max(ServiceDate, na.rm = TRUE)) %>>%
           # only keep most recent service
           dplyr::ungroup()
@@ -637,7 +641,7 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
               ServiceDate == -Inf,
               paste0(" (", Description, ")"),
               paste0(
-                " (", ServiceDate, ")",
+                " (", ServiceDate, " : ", Description, ")",
                 dplyr::if_else(
                   dMeasure::interval(ServiceDate, AppointmentDate)$year < 1,
                   "",

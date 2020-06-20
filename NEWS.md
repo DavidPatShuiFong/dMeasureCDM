@@ -1,5 +1,12 @@
 # News
 
+# 0.3.3
+20th June 2020
+
+* `billings_cdm` now gathers together Descriptions. If a CDM
+  has been claimed before, the discovered reasons for doing a
+  CDM are now included in the Description.
+
 # 0.3.2
 20th May 2020
 

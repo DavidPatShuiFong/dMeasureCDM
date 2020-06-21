@@ -332,8 +332,10 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 #' @param date_from $date_a (from dMeasure) start date
 #' @param date_to $date_b end date (inclusive)
 #' @param clinicians $clinicians (from dMeasure) list of clinicians to view
-#' @param intID list of internal ID (default is NULL, in which case appointments_list is used)
+#' @param intID vector of internal ID (default is NULL, in which case appointments_list is used)
 #' @param intID_Date if intID is not NULL, then date to check (default is Sys.Date())
+#'   intID_Date can be a single value (applies to all intID), or a vector (different
+#'   date can be defined for each intID) the same length as intID.
 #' @param cdm_chosen (defaut cdm_item_names) item types to show, defaults to all available
 #' @param lazy if TRUE, then do not recalculate appointment list. otherwise, re-calculate
 #' @param screentag (default FALSE) optionally add a fomantic/semantic HTML description of 'action'
@@ -359,6 +361,13 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
              cdm_chosen = cdm_item_names,
              lazy = FALSE,
              screentag = FALSE, screentag_print = TRUE) {
+
+    if (!is.null(intID) &&
+        length(intID_Date) > 1 &&
+        length(intID_Date) != length(intID))
+      stop("Length of intID_Date must either be '1' (one) or ",
+           "the same length as intID")
+
     if (is.na(date_from)) {
       date_from <- self$dM$date_a
     }
@@ -423,7 +432,8 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
       # minimum seven days old
       # if contact view and no valid subscription,
       # minimum one hundred and twenty days old
-      x <- self$dM$check_subscription(clinicians,
+      x <- self$dM$check_subscription(
+        clinicians,
         date_from, date_to,
         adjust_days = adjust_days
       )
@@ -437,7 +447,8 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
         if (is.null(intID)) {
           # appointment list
           if (!lazy) {
-            self$dMBillings$billed_appointments(date_from, date_to,
+            self$dMBillings$billed_appointments(
+              date_from, date_to,
               clinicians,
               lazy = FALSE
             )
@@ -452,20 +463,39 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
               ServiceDate <= AppointmentDate
             )
         } else {
+          max_intID_Date <- max(intID_Date)
+          # SQL has problem with max dates
           cdm_codes <- cdm_item$code
           billings_list <- self$dM$db$services %>>%
             dplyr::filter(
               InternalID %in% c(intID, -1),
               MBSItem %in% cdm_codes,
-              ServiceDate <= intID_Date
+              ServiceDate <= max_intID_Date
+              # intID_Date could be a single date, but can also filter
+              # if intID_Date is a vector of dates
             ) %>>%
             dplyr::collect() %>>%
             dplyr::mutate(
-              AppointmentDate = intID_Date, # will be used to compare ServiceDate
               ServiceDate = as.Date(ServiceDate),
               AppointmentTime = as.character(NA),
               Provider = as.character(NA)
-            ) # dummy columns, remove later
+              # dummy columns, remove later
+            )
+          # add AppointmentDate, which will be used to compare ServiceDate
+          if (length(intID_Date) > 1 && length(intID_Date) == length(intID)) {
+            # intID_Date is a vector, which needs to be as long as intID
+            billings_list <- billings_list %>>%
+              dplyr::left_join(
+                data.frame(InternalID = intID, AppointmentDate = intID_Date),
+                by = "InternalID") %>>%
+              dplyr::filter(AppointmentDate >= ServiceDate)
+                # this might filter out some more entries if
+                # intID_Date is a vector, rather than a single value
+          } else {
+            billings_list <- billings_list %>>%
+              dplyr::mutate(AppointmentDate = intID_Date)
+            # intID_date is only a single value
+          }
         }
       }
 
@@ -564,13 +594,17 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
             dplyr::filter(InternalID %in% c(intID, -1)) %>>%
             dplyr::select(InternalID, DOB) %>>%
             dplyr::collect() %>>%
-            dplyr::mutate(DOB = as.Date(DOB), Date = as.Date(intID_Date)) %>>%
+            dplyr::mutate(DOB = as.Date(DOB)) %>>%
+            dplyr::left_join(
+              data.frame(InternalID = intID, Date = intID_Date),
+              by = "InternalID") %>>%
+            # intID_Date could either be a single date or vector of dates
             # initially Date is a dttm (POSIXt) object,
             # which makes the subsequent calc_age very slow,
             # and throws up warnings
             dplyr::mutate(
               Age = dMeasure::calc_age(DOB, Date),
-              AppointmentDate = intID_Date,
+              AppointmentDate = Date,
               AppointmentTime = as.character(NA),
               Provider = as.character(NA)
             ) %>>%

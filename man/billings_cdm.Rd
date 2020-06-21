@@ -26,9 +26,11 @@ billings_cdm(
 
 \item{clinicians}{$clinicians (from dMeasure) list of clinicians to view}
 
-\item{intID}{list of internal ID (default is NULL, in which case appointments_list is used)}
+\item{intID}{vector of internal ID (default is NULL, in which case appointments_list is used)}
 
-\item{intID_Date}{if intID is not NULL, then date to check (default is Sys.Date())}
+\item{intID_Date}{if intID is not NULL, then date to check (default is Sys.Date())
+intID_Date can be a single value (applies to all intID), or a vector (different
+date can be defined for each intID) the same length as intID.}
 
 \item{cdm_chosen}{(defaut cdm_item_names) item types to show, defaults to all available}
 

@@ -1,5 +1,20 @@
 # News
 
+# 0.4.0
+27th June 2020
+
+## Changes
+
+* Responsiblity for GPstat/DailyMeasure UI moved from DailyMeasure
+  to dMeasureCDM
+  + in file `CDM_GPstatUI.R`
+  + `shinydashboardmenuItem`, `dMeasureShinytabItems`, `datatableUI`, `datatableServer`
+  
+## Bugfix
+
+* billings_cdm had an error if passed a non-null `intID` of length zero 
+  e.g. numeric(0)
+  
 # 0.3.3
 20th June 2020
 

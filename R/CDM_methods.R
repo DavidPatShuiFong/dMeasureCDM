@@ -362,11 +362,16 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
              lazy = FALSE,
              screentag = FALSE, screentag_print = TRUE) {
 
-    if (!is.null(intID) &&
-        length(intID_Date) > 1 &&
-        length(intID_Date) != length(intID))
-      stop("Length of intID_Date must either be '1' (one) or ",
-           "the same length as intID")
+    if (!is.null(intID)) {
+      if (length(intID) == 0) {
+        # intID is defined, but is length 0! e.g. numeric(0)
+        intID <- -1 # assign a dummy value
+      }
+      if (length(intID_Date) > 1 &&
+          length(intID_Date) != length(intID))
+        stop("Length of intID_Date must either be '1' (one) or ",
+             "the same length as intID")
+    }
 
     if (is.na(date_from)) {
       date_from <- self$dM$date_a

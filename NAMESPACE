@@ -2,4 +2,9 @@
 
 export("%>>%")
 export(dMeasureCDM)
+export(dMeasureShinytabItems)
+export(datatableServer)
+export(datatableUI)
+export(shinydashboardmenuItem)
+export(steps_introduction_df)
 importFrom(pipeR,"%>>%")

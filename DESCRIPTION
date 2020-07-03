@@ -21,7 +21,7 @@ RoxygenNote: 7.1.0.9000
 Collate: 
     'r6_helpers.R'
     'CDM.R'
-    'CDM_GPstatUI.R'
-    'CDM_methods.R'
     'introduction.R'
+    'methods.R'
+    'userInterface.R'
     'utils-pipe.R'

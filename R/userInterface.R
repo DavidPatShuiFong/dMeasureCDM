@@ -141,18 +141,46 @@ datatableServer <- function(input, output, session, dMCDM) {
   output$cdm_item_choice <- renderUI({
     shinyWidgets::dropdown(
       input_id = "choice_dropdown",
-      shinyWidgets::checkboxGroupButtons(
-        inputId = ns("cdm_chosen"), label = "CDM items shown",
-        choices = cdm_item_names,
-        selected = setdiff(cdm_item_names, c("DiabetesSIP", "AsthmaSIP")),
-        # DiabetesSIP and AsthmaSIP no longer valid items :(
-        status = "primary",
-        checkIcon = list(yes = icon("ok", lib = "glyphicon"))
-      ),
       icon = icon("gear"),
-      label = "CDM items shown"
+      label = "CDM items shown",
+      shiny::actionButton(
+        inputId = ns("view_cdmItems"),
+        label = "Change CDM items shown"
+      )
     )
   })
+  cdm_chosen <- shiny::reactiveVal(
+    setdiff(cdm_item_names, c("DiabetesSIP", "AsthmaSIP"))
+  )
+  shiny::observeEvent(
+    input$view_cdmItems,
+    ignoreInit = TRUE, {
+      shiny::showModal(
+        shiny::modalDialog(
+          title = "Patient lists",
+          shinyWidgets::checkboxGroupButtons(
+            inputId = ns("cdm_chosen"), label = "CDM items shown",
+            choices = cdm_item_names,
+            selected = cdm_chosen(),
+            # DiabetesSIP and AsthmaSIP no longer valid items :(
+            status = "primary",
+            checkIcon = list(yes = icon("ok", lib = "glyphicon"))
+          ),
+          easyClose = FALSE,
+          footer = tagList(
+            modalButton("Cancel"),
+            actionButton(ns("cdmChosen_ok"), "OK")
+          )
+        )
+      )
+    }
+  )
+  shiny::observeEvent(
+    input$cdmChosen_ok, {
+      cdm_chosen(input$cdm_chosen)
+      shiny::removeModal()
+    }
+  )
 
   # filter to CDM item billed prior to (or on) the
   #  day of displayed appointments
@@ -163,7 +191,7 @@ datatableServer <- function(input, output, session, dMCDM) {
       c(
         dMCDM$dM$appointments_filteredR(),
         dMCDM$dM$contact_count_listR(),
-        input$cdm_chosen,
+        cdm_chosen(),
         input$appointment_contact_view,
         input$printcopy_view
       ), ignoreInit = TRUE, {
@@ -186,7 +214,7 @@ datatableServer <- function(input, output, session, dMCDM) {
           # called with 'appointment' method if intID = NULL,
           # otherwise called with 'intID' defined
           intID = intID, intID_Date = Sys.Date(),
-          cdm_chosen = input$cdm_chosen,
+          cdm_chosen = cdm_chosen(),
           lazy = TRUE, # no need to re-calculate $appointments_billings
           screentag = !input$printcopy_view,
           screentag_print = input$printcopy_view

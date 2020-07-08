@@ -142,7 +142,7 @@ datatableServer <- function(input, output, session, dMCDM) {
     shinyWidgets::dropdown(
       input_id = "choice_dropdown",
       icon = icon("gear"),
-      label = "CDM items shown",
+      label = "CDM settings",
       shiny::actionButton(
         inputId = ns("view_cdmItems"),
         label = "Change CDM items shown"
@@ -167,9 +167,9 @@ datatableServer <- function(input, output, session, dMCDM) {
             checkIcon = list(yes = icon("ok", lib = "glyphicon"))
           ),
           easyClose = FALSE,
-          footer = tagList(
-            modalButton("Cancel"),
-            actionButton(ns("cdmChosen_ok"), "OK")
+          footer = shiny::tagList(
+            shiny::modalButton("Cancel"),
+            shiny::actionButton(ns("cdmChosen_ok"), "OK")
           )
         )
       )

@@ -1,5 +1,12 @@
 # News
 
+# 0.4.2
+8th July 2020
+
+## Changes
+
+* change dropdown label to 'Settings'
+
 # 0.4.1
 3rd July 2020
 

@@ -194,7 +194,7 @@ datatableServer <- function(input, output, session, dMCDM) {
         cdm_chosen(),
         input$appointment_contact_view,
         input$printcopy_view
-      ), ignoreInit = TRUE, {
+      ), ignoreInit = FALSE, {
         shiny::validate(
           shiny::need(
             dMCDM$dMBillings$appointments_billingsR(),

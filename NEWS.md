@@ -1,5 +1,22 @@
 # News
 
+# 0.4.2
+8th July 2020
+
+## Changes
+
+* change dropdown label to 'Settings'
+
+# 0.4.1
+3rd July 2020
+
+## Changes
+
+* CDM items shown chosen through modal
+  + as a result, the displayed lists of CDM items does not change each
+    time a CDM item is selected/de-selected, but only after the modal
+    is closed with 'OK'
+
 # 0.4.0
 27th June 2020
 

@@ -65,7 +65,7 @@ datatableUI <- function(id) {
   shiny::tagList(
     shiny::fluidRow(
       shiny::column(
-        4,
+        width = 4,
         shinyWidgets::switchInput(
           inputId = ns("printcopy_view"),
           label = paste(
@@ -77,17 +77,19 @@ datatableUI <- function(id) {
           width = "20em"
         )
       ),
-      shiny::column(2,
-                    offset = 2,
-                    shinyWidgets::pickerInput(
-                      inputId = ns("appointment_contact_view"),
-                      choices = c("Appointment view", "Contact view"),
-                      choicesOpt = list(icon = c("fa fa-calendar-alt", "fa fa-handshake"))
-                    )
+      shiny::column(
+        width = 2,
+        offset = 2,
+        shinyWidgets::pickerInput(
+          inputId = ns("appointment_contact_view"),
+          choices = c("Appointment view", "Contact view"),
+          choicesOpt = list(icon = c("fa fa-calendar-alt", "fa fa-handshake"))
+        )
       ),
-      shiny::column(2,
-                    offset = 2, # note that total 'column' width = 12
-                    shiny::uiOutput(ns("cdm_item_choice"))
+      shiny::column(
+        width = 2,
+        offset = 2, # note that total 'column' width = 12
+        shiny::uiOutput(ns("cdm_item_choice"))
       )
     ),
     shinycssloaders::withSpinner(
@@ -137,48 +139,41 @@ datatableServer <- function(input, output, session, dMCDM) {
   )
 
   cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored
-
-  output$cdm_item_choice <- renderUI({
-    shinyWidgets::dropdown(
-      input_id = "choice_dropdown",
-      icon = icon("gear"),
-      label = "CDM settings",
-      shiny::actionButton(
-        inputId = ns("view_cdmItems"),
-        label = "Change CDM items shown"
-      )
-    )
-  })
   cdm_chosen <- shiny::reactiveVal(
     setdiff(cdm_item_names, c("DiabetesSIP", "AsthmaSIP"))
   )
+  output$cdm_item_choice <- renderUI({
+    shinyWidgets::dropMenu(
+      shiny::actionButton(
+        inputId = ns("choice_dropdown"),
+        icon = icon("gear"),
+        label = "CDM settings"
+      ),
+      shiny::tags$div(
+        shinyWidgets::checkboxGroupButtons(
+          inputId = ns("cdm_chosen"), label = "CDM items shown",
+          choices = cdm_item_names,
+          selected = cdm_chosen(),
+          # DiabetesSIP and AsthmaSIP no longer valid items :(
+          status = "primary",
+          checkIcon = list(yes = icon("ok", lib = "glyphicon"))
+        ),
+        shiny::br(),
+        shiny::em("Close to confirm")
+      ),
+      placement = "bottom-end"
+    )
+  })
   shiny::observeEvent(
-    input$view_cdmItems,
+    input$choice_dropdown_dropmenu,
     ignoreInit = TRUE, {
-      shiny::showModal(
-        shiny::modalDialog(
-          title = "Patient lists",
-          shinyWidgets::checkboxGroupButtons(
-            inputId = ns("cdm_chosen"), label = "CDM items shown",
-            choices = cdm_item_names,
-            selected = cdm_chosen(),
-            # DiabetesSIP and AsthmaSIP no longer valid items :(
-            status = "primary",
-            checkIcon = list(yes = icon("ok", lib = "glyphicon"))
-          ),
-          easyClose = FALSE,
-          footer = shiny::tagList(
-            shiny::modalButton("Cancel"),
-            shiny::actionButton(ns("cdmChosen_ok"), "OK")
-          )
-        )
-      )
-    }
-  )
-  shiny::observeEvent(
-    input$cdmChosen_ok, {
-      cdm_chosen(input$cdm_chosen)
-      shiny::removeModal()
+      # this is triggered when shinyWidgets::dropMenu is opened/closed
+      # tag is derived from the first tag in dropMenu, adding '_dropmenu'
+      if (!input$choice_dropdown_dropmenu) {
+        # only if closing the 'dropmenu' modal
+        # unfortunately, is also triggered during Init (despite the ignoreInit)
+        cdm_chosen(input$cdm_chosen)
+      }
     }
   )
 
@@ -195,6 +190,7 @@ datatableServer <- function(input, output, session, dMCDM) {
         input$appointment_contact_view,
         input$printcopy_view
       ), ignoreInit = FALSE, {
+        shiny::req(dMCDM$dM$clinicians) # need some clinicians defined!
         shiny::validate(
           shiny::need(
             dMCDM$dMBillings$appointments_billingsR(),

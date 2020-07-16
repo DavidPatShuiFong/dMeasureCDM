@@ -1,5 +1,13 @@
 # News
 
+# 0.4.3
+16th July 2020
+
+## Changes
+
+* `billings_cdm_list` requires (`shiny::req`) non-empty `dM$clinicians`
+* change dropdown to dropMenu
+
 # 0.4.2
 8th July 2020
 

@@ -2,6 +2,7 @@
 
 export("%>>%")
 export(dMeasureCDM)
+export(dMeasureIntegration)
 export(dMeasureShinytabItems)
 export(datatableServer)
 export(datatableUI)

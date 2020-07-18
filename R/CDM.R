@@ -1,5 +1,6 @@
 #' dMeasureCDM - list billings module for dMeasure
 #'
+#' @md
 #'
 #' @name cdm
 #' @title dMeasureCDM
@@ -7,6 +8,27 @@
 #' @include r6_helpers.R
 #' functions to help create R6 classes
 NULL
+
+#' dMeasureIntegration
+#'
+#' @name dMeasureIntegration
+#'
+#' @description integration with dMeasure
+#'   (especially DailyMeasure)
+#'
+#' @param information the information required
+#'   `Provides` - modules provided (in this case, `dMeasureCDM`)
+#'   `Requires` - the modules required (including `dMeasure`)
+#'   `moduleID` - IDs of modules to create
+#'
+#' @return vector of required information
+#'
+#' @export
+dMeasureIntegration <- function(information) {
+  if (information == "Provides") {return(c("dMeasureCDM"))}
+  if (information == "Requires") {return(c("dMeasure", "dMeasureBillings"))}
+  if (information == "moduleID") {return(c("CDM_dt"))}
+}
 
 #' dMeasureCDM class
 #' @title dMeasureCDM class

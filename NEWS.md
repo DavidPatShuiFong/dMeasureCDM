@@ -1,5 +1,16 @@
 # News
 
+# 0.5.0
+18th July 2020
+
+## New
+
+* `dMeasureIntegration` to allow auto-loading
+
+## Changes
+
+* update `Suggests` in `DESCRIPTION`
+
 # 0.4.3
 16th July 2020
 

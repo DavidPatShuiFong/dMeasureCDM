@@ -1,7 +1,7 @@
 # News
 
 # 0.5.0
-18th July 2020
+25th July 2020
 
 ## New
 
@@ -10,6 +10,7 @@
 ## Changes
 
 * update `Suggests` in `DESCRIPTION`
+* remove use of `shinycssloaders`
 
 # 0.4.3
 16th July 2020

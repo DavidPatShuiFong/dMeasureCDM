@@ -4,14 +4,10 @@
 \alias{datatableServer}
 \title{Chronic disease management list module - server}
 \usage{
-datatableServer(input, output, session, dMCDM)
+datatableServer(id, dMCDM)
 }
 \arguments{
-\item{input}{as required by Shiny modules}
-
-\item{output}{as required by Shiny modules}
-
-\item{session}{as required by Shiny modules}
+\item{id}{id}
 
 \item{dMCDM}{dMeasureCDM R6 object
 access to appointments lists, condition lists, history and EMR database}

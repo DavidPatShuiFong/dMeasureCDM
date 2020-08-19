@@ -1,7 +1,7 @@
 Package: dMeasureCDM
 Type: Package
 Title: Chronic Disease Management module for dMeasure
-Version: 0.4.2
+Version: 0.5.0
 Author: David Fong
 Maintainer: David Fong <vkelim@bigpond.com>
 Description: Examine patient lists for chronic disease management opportunities.
@@ -16,7 +16,10 @@ Imports:
     dMeasure,
     dMeasureBillings
 Suggests:
-    shiny
+    shiny,
+    shinydashboard,
+    shinyWidgets,
+    DT
 RoxygenNote: 7.1.0.9000
 Collate: 
     'r6_helpers.R'

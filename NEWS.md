@@ -1,5 +1,25 @@
 # News
 
+# 0.5.0
+25th July 2020
+
+## New
+
+* `dMeasureIntegration` to allow auto-loading
+
+## Changes
+
+* update `Suggests` in `DESCRIPTION`
+* remove use of `shinycssloaders`
+
+# 0.4.3
+16th July 2020
+
+## Changes
+
+* `billings_cdm_list` requires (`shiny::req`) non-empty `dM$clinicians`
+* change dropdown to dropMenu
+
 # 0.4.2
 8th July 2020
 

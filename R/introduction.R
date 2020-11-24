@@ -23,7 +23,7 @@ steps_introduction_df <- function(element_name) {
         "Appointments", shiny::icon("calendar-alt"), ",",
         "or historical Contacts", shiny::icon("handshake"), ".",
         shiny::br(), shiny::br(),
-        "If a selected clinician does not have a subscription/license",
+        "If a selected clinician is not registered/subscribed",
         "then CDM opportunities will only be shown if at least ninety days old."
       )),
       position = "auto",

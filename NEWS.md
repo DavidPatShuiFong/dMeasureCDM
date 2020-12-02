@@ -1,5 +1,13 @@
 # News
 
+# 0.5.1
+2nd December 2020
+
+## Changes
+
+* `steps_introduction_df` parameter `element_name` default to `as.character(NA)`
+  + explicit `DailyMeasure::` for call to `steps_choose_contact_details`
+
 # 0.5.0
 25th July 2020
 

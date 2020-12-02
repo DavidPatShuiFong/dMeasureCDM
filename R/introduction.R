@@ -9,7 +9,7 @@
 #' requires pro-forma steps from DailyMeasure
 #'
 #' @export
-steps_introduction_df <- function(element_name) {
+steps_introduction_df <- function(element_name = as.character(NA)) {
   steps_df <-
     data.frame(
       element = as.character(NA),
@@ -96,7 +96,7 @@ steps_introduction_df <- function(element_name) {
       )),
       position = "auto"
     )) %>>%
-    rbind(steps_choose_contact_details_df())
+    rbind(DailyMeasure::steps_choose_contact_details_df())
 
   return(steps_df)
 }

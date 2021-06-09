@@ -20,7 +20,7 @@ Suggests:
     shinydashboard,
     shinyWidgets,
     DT
-RoxygenNote: 7.1.0.9000
+RoxygenNote: 7.1.1
 Collate: 
     'r6_helpers.R'
     'CDM.R'

@@ -1,5 +1,13 @@
 # News
 
+# 0.5.1
+2nd December 2020
+
+## Changes
+
+* `steps_introduction_df` parameter `element_name` default to `as.character(NA)`
+  + explicit `DailyMeasure::` for call to `steps_choose_contact_details`
+
 # 0.5.0
 25th July 2020
 
@@ -62,7 +70,7 @@
 # 0.3.2
 20th May 2020
 
-* changes in management of lack of valid subscription for
+* changes in management of lack of valid subscription/registration for
   chosen clinicians and selected date range.
   no longer tries to change the selected date range,
   instead returns empty dataframe.

@@ -4,7 +4,7 @@
 \alias{steps_introduction_df}
 \title{steps_introduction_df}
 \usage{
-steps_introduction_df(element_name)
+steps_introduction_df(element_name = as.character(NA))
 }
 \arguments{
 \item{element_name}{the HTML datatable element, including datatable and helpers such as print/copy view}

@@ -538,6 +538,23 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
         # minimum 3-month gap since claiming previous GPMP/TCA,
         # or most recent claim is a GPMP R/V
 
+        # determine GPMP r/v status
+        gpmprv <- gpmprv %>>%
+          dplyr::mutate(
+            itemstatus =
+              dplyr::if_else(
+                MBSName %in% c("GPMP", "TCA"),
+                "never",
+                # no GPMP R/V since the last GPMP/TCA
+                dplyr::if_else(
+                  dMeasure::interval(ServiceDate, AppointmentDate, unit = "month")$month >= 3,
+                  # GPMP R/V. Less than or more than 3 months?
+                  "late",
+                  "uptodate"
+                )
+              )
+          )
+
         # add screentags as necessary
         if (screentag) {
           gpmprv <- gpmprv %>>%
@@ -546,16 +563,10 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
                 dMeasure::semantic_tag(
                   "GPMP R/V", # semantic/fomantic buttons
                   colour =
-                    dplyr::if_else(
-                      MBSName %in% c("GPMP", "TCA"),
-                      "red",
-                      # no GPMP R/V since the last GPMP/TCA
-                      dplyr::if_else(
-                        dMeasure::interval(ServiceDate, AppointmentDate, unit = "month")$month >= 3,
-                        # GPMP R/V. Less than or more than 3 months?
-                        "yellow",
-                        "green"
-                      )
+                    dplyr::case_when(
+                      itemstatus == "never" ~ "red",
+                      itemstatus == "late" ~ "yellow",
+                      itemstatus == "uptodate" ~ "green"
                     ),
                   popuphtml =
                     paste0(
@@ -572,14 +583,10 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
               mbstag_print =
                 paste0(
                   "GPMP R/V", " ", # printable version of information
-                  dplyr::if_else(
-                    MBSName %in% c("GPMP", "TCA"),
-                    paste0("(", MBSName, ": ", ServiceDate, ") Overdue"),
-                    dplyr::if_else(
-                      dMeasure::interval(ServiceDate, AppointmentDate, unit = "month")$month >= 3,
-                      paste0("(", ServiceDate, ") Overdue"),
-                      paste0("(", ServiceDate, ")")
-                    )
+                  dplyr::case_when(
+                    itemstatus == "never" ~ paste0("(", MBSName, ": ", ServiceDate, ") Overdue"),
+                    itemstatus == "late" ~ paste0("(", ServiceDate, ") Overdue"),
+                    itemstatus == "uptodate" ~ paste0("(", ServiceDate, ")")
                   )
                 )
             )
@@ -646,21 +653,31 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
           dplyr::ungroup()
       }
 
+      billings_list <- billings_list %>>%
+        dplyr::mutate(
+          itemstatus =
+            dplyr::if_else(
+              ServiceDate == -Inf,
+              "never",
+              # invalid date is '-Inf', means item not claimed yet
+              dplyr::if_else(
+                dMeasure::interval(ServiceDate, AppointmentDate)$year < 1,
+                "uptodate",
+                "late"
+              )
+            )
+        )
+
       if (screentag) {
         billings_list <- billings_list %>>%
           dplyr::mutate(
             mbstag =
               dMeasure::semantic_tag(MBSName, # semantic/fomantic buttons
                 colour =
-                  dplyr::if_else(
-                    ServiceDate == -Inf,
-                    "red",
-                    # invalid date is '-Inf', means item not claimed yet
-                    dplyr::if_else(
-                      dMeasure::interval(ServiceDate, AppointmentDate)$year < 1,
-                      "green",
-                      "yellow"
-                    )
+                  dplyr::case_when(
+                    itemstatus == "never" ~ "red",
+                    itemstatus == "late" ~ "yellow",
+                    itemstatus == "uptodate" ~ "green"
                   ),
                 popuphtml =
                   paste0(
@@ -674,25 +691,21 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
 
       if (screentag_print) {
         billings_list <- billings_list %>>%
-          dplyr::mutate(mbstag_print = paste0(
-            MBSName, # printable version of information
-            dplyr::if_else(
-              ServiceDate == -Inf,
-              paste0(" (", Description, ")"),
-              paste0(
-                " (", ServiceDate, " : ", Description, ")",
-                dplyr::if_else(
-                  dMeasure::interval(ServiceDate, AppointmentDate)$year < 1,
-                  "",
-                  " Overdue"
-                )
+          dplyr::mutate(
+            mbstag_print = paste0(
+              MBSName, # printable version of information
+              dplyr::case_when(
+                itemstatus == "never" ~ paste0(" (", Description, ")"),
+                itemstatus == "late" ~ paste0(" (", ServiceDate, " : ", Description, ") Overdue"),
+                itemstatus == "uptodate" ~ paste0(" (", ServiceDate, " : ", Description, ")")
               )
             )
-          ))
+          )
       }
 
       billings_list <- billings_list %>>%
-        rbind(gpmprv) %>>% # add in GPMP reviews
+        dplyr::select(-itemstatus) %>>% # don't need itemstatus any more
+        rbind(gpmprv %>>% dplyr::select(-itemstatus)) %>>% # add in GPMP reviews
         dplyr::group_by(InternalID, AppointmentDate, AppointmentTime, Provider) %>>%
         # gathers item numbers on the same day into a single row
         {

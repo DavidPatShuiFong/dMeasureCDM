@@ -114,29 +114,12 @@ datatableServer <- function(id, dMCDM) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    # MBS (medicare benefits schedule) item numbers for CDM
-    cdm_item <- data.frame(
-      code = c(
-        721, 92024, 92068, 723, 92025, 92069, 732, 92028, 92072,
-        703, 705, 707,
-        2517, 2521, 2525,
-        2546, 2552, 2558,
-        2700, 2701, 92112, 92124, 92113, 92125,
-        2715, 2717, 92116, 92128, 92117, 92129
-      ),
-      name = c(
-        "GPMP", "GPMP", "GPMP", "TCA", "TCA", "TCA", "GPMP R/V", "GPMP R/v", "GPMP R/V",
-        "HA", "HA", "HA",
-        "DiabetesSIP", "DiabetesSIP", "DiabetesSIP",
-        "AsthmaSIP", "AsthmaSIP", "AsthmaSIP",
-        "MHCP", "MHCP", "MHCP", "MHCP", "MHCP", "MHCP",
-        "MHCP", "MHCP", "MHCP", "MHCP", "MHCP", "MHCP"
-      )
-    )
-
-    cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored
     cdm_chosen <- shiny::reactiveVal(
       setdiff(cdm_item_names, c("DiabetesSIP", "AsthmaSIP"))
+    ) # cdm_item_names are defined in CDM.R as global
+    itemstatus_chosen <- shiny::reactiveVal(
+      unlist(item_status, use.names = FALSE)
+      # item_status defined in CDM.R as global
     )
     output$cdm_item_choice <- renderUI({
       shinyWidgets::dropMenu(
@@ -151,6 +134,15 @@ datatableServer <- function(id, dMCDM) {
             choices = cdm_item_names,
             selected = cdm_chosen(),
             # DiabetesSIP and AsthmaSIP no longer valid items :(
+            status = "primary",
+            checkIcon = list(yes = icon("ok", lib = "glyphicon"))
+          ),
+          shiny::hr(),
+          shinyWidgets::checkboxGroupButtons(
+            inputId = ns("itemstatus_chosen"), label = "Item status shown",
+            choices = unlist(item_status, use.names = FALSE),
+            # item_status defined in CDM.R
+            selected = itemstatus_chosen(),
             status = "primary",
             checkIcon = list(yes = icon("ok", lib = "glyphicon"))
           ),
@@ -169,6 +161,7 @@ datatableServer <- function(id, dMCDM) {
           # only if closing the 'dropmenu' modal
           # unfortunately, is also triggered during Init (despite the ignoreInit)
           cdm_chosen(input$cdm_chosen)
+          itemstatus_chosen(input$itemstatus_chosen)
         }
       }
     )
@@ -183,6 +176,7 @@ datatableServer <- function(id, dMCDM) {
           dMCDM$dM$appointments_filteredR(),
           dMCDM$dM$contact_count_listR(),
           cdm_chosen(),
+          itemstatus_chosen(),
           input$appointment_contact_view,
           input$printcopy_view
         ), ignoreInit = FALSE, {
@@ -207,6 +201,7 @@ datatableServer <- function(id, dMCDM) {
             # otherwise called with 'intID' defined
             intID = intID, intID_Date = Sys.Date(),
             cdm_chosen = cdm_chosen(),
+            itemstatus_chosen = itemstatus_chosen(),
             lazy = TRUE, # no need to re-calculate $appointments_billings
             screentag = !input$printcopy_view,
             screentag_print = input$printcopy_view
@@ -229,11 +224,12 @@ datatableServer <- function(id, dMCDM) {
           !is.null(dMCDM$dM$appointments_filtered_timeR())) {
         if (input$appointment_contact_view == "Appointment view") {
           cdm_list <- dMCDM$dM$appointments_filtered_timeR() %>>%
-            dplyr::inner_join(billings_cdm_list(),
-                              by = c(
-                                "InternalID", "AppointmentDate",
-                                "AppointmentTime", "Provider"
-                              )
+            dplyr::inner_join(
+              billings_cdm_list(),
+              by = c(
+                "InternalID", "AppointmentDate",
+                "AppointmentTime", "Provider"
+              )
             )
           if (input$printcopy_view == TRUE) {
             # printable/copyable view

@@ -337,6 +337,7 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 #'   intID_Date can be a single value (applies to all intID), or a vector (different
 #'   date can be defined for each intID) the same length as intID.
 #' @param cdm_chosen (defaut cdm_item_names) item types to show, defaults to all available
+#' @param itemstatus_chosen (default is contents of item_status) item status to show, defaults to all available
 #' @param lazy if TRUE, then do not recalculate appointment list. otherwise, re-calculate
 #' @param screentag (default FALSE) optionally add a fomantic/semantic HTML description of 'action'
 #' @param screentag_print (default TRUE) optionally add a 'printable' description of 'action'
@@ -347,6 +348,7 @@ cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique c
 billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicians = NA,
                          intID = NULL, intID_Date = Sys.Date(),
                          cdm_chosen = cdm_item_names,
+                         itemstatus_chosen = unlist(item_status, use.names = FALSE),
                          lazy = FALSE,
                          screentag = FALSE, screentag_print = TRUE) {
   dMeasureCDM_obj$billings_cdm(
@@ -357,10 +359,11 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
 .public(
   dMeasureCDM, "billings_cdm",
   function(date_from = NA, date_to = NA, clinicians = NA,
-             intID = NULL, intID_Date = Sys.Date(),
-             cdm_chosen = cdm_item_names,
-             lazy = FALSE,
-             screentag = FALSE, screentag_print = TRUE) {
+           intID = NULL, intID_Date = Sys.Date(),
+           cdm_chosen = cdm_item_names,
+           itemstatus_chosen = unlist(item_status, use.names = FALSE),
+           lazy = FALSE,
+           screentag = FALSE, screentag_print = TRUE) {
 
     if (!is.null(intID)) {
       if (length(intID) == 0) {
@@ -544,15 +547,18 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
             itemstatus =
               dplyr::if_else(
                 MBSName %in% c("GPMP", "TCA"),
-                "never",
+                item_status$never,
                 # no GPMP R/V since the last GPMP/TCA
                 dplyr::if_else(
                   dMeasure::interval(ServiceDate, AppointmentDate, unit = "month")$month >= 3,
                   # GPMP R/V. Less than or more than 3 months?
-                  "late",
-                  "uptodate"
+                  item_status$late,
+                  item_status$uptodate
                 )
               )
+          ) %>>%
+          dplyr::filter(
+            itemstatus %in% itemstatus_chosen
           )
 
         # add screentags as necessary
@@ -564,9 +570,9 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
                   "GPMP R/V", # semantic/fomantic buttons
                   colour =
                     dplyr::case_when(
-                      itemstatus == "never" ~ "red",
-                      itemstatus == "late" ~ "yellow",
-                      itemstatus == "uptodate" ~ "green"
+                      itemstatus == item_status$never ~ "red",
+                      itemstatus == item_status$late ~ "yellow",
+                      itemstatus == item_status$uptodate ~ "green"
                     ),
                   popuphtml =
                     paste0(
@@ -584,9 +590,9 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
                 paste0(
                   "GPMP R/V", " ", # printable version of information
                   dplyr::case_when(
-                    itemstatus == "never" ~ paste0("(", MBSName, ": ", ServiceDate, ") Overdue"),
-                    itemstatus == "late" ~ paste0("(", ServiceDate, ") Overdue"),
-                    itemstatus == "uptodate" ~ paste0("(", ServiceDate, ")")
+                    itemstatus == item_status$never ~ paste0("(", MBSName, ": ", ServiceDate, ") Overdue"),
+                    itemstatus == item_status$late ~ paste0("(", ServiceDate, ") Overdue"),
+                    itemstatus == item_status$uptodate ~ paste0("(", ServiceDate, ")")
                   )
                 )
             )
@@ -658,14 +664,17 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
           itemstatus =
             dplyr::if_else(
               ServiceDate == -Inf,
-              "never",
+              item_status$never,
               # invalid date is '-Inf', means item not claimed yet
               dplyr::if_else(
                 dMeasure::interval(ServiceDate, AppointmentDate)$year < 1,
-                "uptodate",
-                "late"
+                item_status$uptodate,
+                item_status$late
               )
             )
+        ) %>>%
+        dplyr::filter(
+          itemstatus %in% itemstatus_chosen
         )
 
       if (screentag) {
@@ -675,9 +684,9 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
               dMeasure::semantic_tag(MBSName, # semantic/fomantic buttons
                 colour =
                   dplyr::case_when(
-                    itemstatus == "never" ~ "red",
-                    itemstatus == "late" ~ "yellow",
-                    itemstatus == "uptodate" ~ "green"
+                    itemstatus == item_status$never ~ "red",
+                    itemstatus == item_status$late ~ "yellow",
+                    itemstatus == item_status$uptodate ~ "green"
                   ),
                 popuphtml =
                   paste0(
@@ -695,9 +704,9 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
             mbstag_print = paste0(
               MBSName, # printable version of information
               dplyr::case_when(
-                itemstatus == "never" ~ paste0(" (", Description, ")"),
-                itemstatus == "late" ~ paste0(" (", ServiceDate, " : ", Description, ") Overdue"),
-                itemstatus == "uptodate" ~ paste0(" (", ServiceDate, " : ", Description, ")")
+                itemstatus == item_status$never ~ paste0(" (", Description, ")"),
+                itemstatus == item_status$late ~ paste0(" (", ServiceDate, " : ", Description, ") Overdue"),
+                itemstatus == item_status$uptodate ~ paste0(" (", ServiceDate, " : ", Description, ")")
               )
             )
           )

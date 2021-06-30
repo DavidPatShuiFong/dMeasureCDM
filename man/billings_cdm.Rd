@@ -12,6 +12,7 @@ billings_cdm(
   intID = NULL,
   intID_Date = Sys.Date(),
   cdm_chosen = cdm_item_names,
+  itemstatus_chosen = unlist(item_status, use.names = FALSE),
   lazy = FALSE,
   screentag = FALSE,
   screentag_print = TRUE
@@ -33,6 +34,8 @@ intID_Date can be a single value (applies to all intID), or a vector (different
 date can be defined for each intID) the same length as intID.}
 
 \item{cdm_chosen}{(defaut cdm_item_names) item types to show, defaults to all available}
+
+\item{itemstatus_chosen}{(default is contents of item_status) item status to show, defaults to all available}
 
 \item{lazy}{if TRUE, then do not recalculate appointment list. otherwise, re-calculate}
 

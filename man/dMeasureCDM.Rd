@@ -178,6 +178,7 @@ dMeasureCDM class
   intID = NULL,
   intID_Date = Sys.Date(),
   cdm_chosen = cdm_item_names,
+  itemstatus_chosen = unlist(item_status, use.names = FALSE),
   lazy = FALSE,
   screentag = FALSE,
   screentag_print = TRUE

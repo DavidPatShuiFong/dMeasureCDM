@@ -1,7 +1,7 @@
 # News
 
 # 0.5.2
-30th June 2021
+3rd July 2021
 
 ## New
 
@@ -9,6 +9,10 @@
   + `item_status` list of status types defined as global in `CDM.R`
   + extra parameter `itemstatus_chosen` added to `billings_cdm`
 * `cdm_tem` and `cdm_item_names` defined as global in `CDM.R`
+
+## Changes
+
+* `dM$dateformat_choice` changes display format of dates
 
 # 0.5.1
 2nd December 2020

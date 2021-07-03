@@ -19,7 +19,8 @@ Suggests:
     shiny,
     shinydashboard,
     shinyWidgets,
-    DT
+    DT,
+    lubridate
 RoxygenNote: 7.1.1
 Collate: 
     'r6_helpers.R'

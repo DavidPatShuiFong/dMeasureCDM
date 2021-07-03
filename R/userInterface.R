@@ -175,6 +175,7 @@ datatableServer <- function(id, dMCDM) {
         c(
           dMCDM$dM$appointments_filteredR(),
           dMCDM$dM$contact_count_listR(),
+          dMCDM$dM$dateformat(),
           cdm_chosen(),
           itemstatus_chosen(),
           input$appointment_contact_view,
@@ -220,6 +221,16 @@ datatableServer <- function(id, dMCDM) {
           "No appointments in selected range"
         )
       )
+
+      if (requireNamespace("lubridate", quietly = TRUE)) {
+        dateformat <- lubridate::stamp_date(dMCDM$dM$dateformat())
+        # formats date into desired format
+        # this is 'reactive'
+      } else {
+        # if no lubridate library is available then, just return the date
+        dateformat <- function(x) {as.character(x)}
+      }
+
       if (!is.null(billings_cdm_list()) &
           !is.null(dMCDM$dM$appointments_filtered_timeR())) {
         if (input$appointment_contact_view == "Appointment view") {
@@ -238,6 +249,9 @@ datatableServer <- function(id, dMCDM) {
                 dplyr::select(
                   Patient, AppointmentDate, AppointmentTime,
                   Provider, cdm_print
+                ) %>>%
+                dplyr::mutate(
+                  AppointmentDate = dateformat(AppointmentDate)
                 ),
               colnames = c(
                 "Patient", "Appointment Date", "Appointment Time",
@@ -251,6 +265,9 @@ datatableServer <- function(id, dMCDM) {
                 dplyr::select(
                   Patient, AppointmentDate, AppointmentTime,
                   Provider, cdm
+                ) %>>%
+                dplyr::mutate(
+                  AppointmentDate = dateformat(AppointmentDate)
                 ),
               colnames = c(
                 "Patient", "Appointment Date", "Appointment Time",
@@ -292,6 +309,9 @@ datatableServer <- function(id, dMCDM) {
                 dplyr::select(
                   Patient, ExternalID, DOB, Age,
                   HomePhone, MobilePhone, cdm_print
+                ) %>>%
+                dplyr::mutate(
+                  DOB = dateformat(DOB)
                 ),
               colnames = c(
                 "Patient", "ExternalID", "DOB", "Age",
@@ -305,6 +325,9 @@ datatableServer <- function(id, dMCDM) {
                 dplyr::select(
                   Patient, ExternalID, DOB, Age,
                   HomePhone, MobilePhone, cdm
+                ) %>>%
+                dplyr::mutate(
+                  DOB = dateformat(DOB)
                 ),
               colnames = c(
                 "Patient", "ExternalID", "DOB", "Age",

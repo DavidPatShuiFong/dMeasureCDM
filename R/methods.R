@@ -391,6 +391,15 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
       clinicians <- c("") # dplyr::filter cannot handle empty list()
     }
 
+    # `dateformat` is a function to convert dates into desired date format
+    if (requireNamespace("lubridate", quietly = TRUE)) {
+      dateformat <- lubridate::stamp_date(self$dM$dateformat_choice)
+      # formats date into desired format
+    } else {
+      # if no lubridate library is available then, just return the date in default format
+      dateformat <- function(x) {as.character(x)}
+    }
+
     return_empty_dataframe <- function(intID, screentag, screentag_print) {
       if (is.null(intID)) {
         # appointment list
@@ -576,7 +585,7 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
                     ),
                   popuphtml =
                     paste0(
-                      "<h4>Date : ", ServiceDate,
+                      "<h4>Date : ", dateformat(ServiceDate),
                       "</h4><h6>Item : ", MBSItem,
                       "</h6><p><font size=\'+0\'>", Description, "</p>"
                     )
@@ -590,9 +599,9 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
                 paste0(
                   "GPMP R/V", " ", # printable version of information
                   dplyr::case_when(
-                    itemstatus == item_status$never ~ paste0("(", MBSName, ": ", ServiceDate, ") Overdue"),
-                    itemstatus == item_status$late ~ paste0("(", ServiceDate, ") Overdue"),
-                    itemstatus == item_status$uptodate ~ paste0("(", ServiceDate, ")")
+                    itemstatus == item_status$never ~ paste0("(", MBSName, ": ", dateformat(ServiceDate), ") Overdue"),
+                    itemstatus == item_status$late ~ paste0("(", dateformat(ServiceDate), ") Overdue"),
+                    itemstatus == item_status$uptodate ~ paste0("(", dateformat(ServiceDate), ")")
                   )
                 )
             )
@@ -690,7 +699,7 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
                   ),
                 popuphtml =
                   paste0(
-                    "<h4>Date : ", ServiceDate,
+                    "<h4>Date : ", dateformat(ServiceDate),
                     "</h4><h6>Item : ", MBSItem,
                     "</h6><p><font size=\'+0\'>", Description, "</p>"
                   )
@@ -705,8 +714,12 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
               MBSName, # printable version of information
               dplyr::case_when(
                 itemstatus == item_status$never ~ paste0(" (", Description, ")"),
-                itemstatus == item_status$late ~ paste0(" (", ServiceDate, " : ", Description, ") Overdue"),
-                itemstatus == item_status$uptodate ~ paste0(" (", ServiceDate, " : ", Description, ")")
+                itemstatus == item_status$late ~ paste0(
+                  " (", dateformat(ServiceDate), " : ", Description, ") Overdue"
+                ),
+                itemstatus == item_status$uptodate ~ paste0(
+                  " (", dateformat(ServiceDate), " : ", Description, ")"
+                )
               )
             )
           )

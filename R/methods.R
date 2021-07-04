@@ -392,13 +392,7 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
     }
 
     # `dateformat` is a function to convert dates into desired date format
-    if (requireNamespace("lubridate", quietly = TRUE)) {
-      dateformat <- lubridate::stamp_date(self$dM$dateformat_choice)
-      # formats date into desired format
-    } else {
-      # if no lubridate library is available then, just return the date in default format
-      dateformat <- function(x) {as.character(x)}
-    }
+    dateformat <- self$dM$dateformat_function()
 
     return_empty_dataframe <- function(intID, screentag, screentag_print) {
       if (is.null(intID)) {

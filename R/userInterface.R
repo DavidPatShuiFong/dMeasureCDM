@@ -222,14 +222,8 @@ datatableServer <- function(id, dMCDM) {
         )
       )
 
-      if (requireNamespace("lubridate", quietly = TRUE)) {
-        dateformat <- lubridate::stamp_date(dMCDM$dM$dateformat())
-        # formats date into desired format
-        # this is 'reactive'
-      } else {
-        # if no lubridate library is available then, just return the date
-        dateformat <- function(x) {as.character(x)}
-      }
+      dateformat <- dMCDM$dM$dateformat_functionR()
+      # function to format date (is reactive)
 
       if (!is.null(billings_cdm_list()) &
           !is.null(dMCDM$dM$appointments_filtered_timeR())) {

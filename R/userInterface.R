@@ -222,7 +222,7 @@ datatableServer <- function(id, dMCDM) {
         )
       )
 
-      dateformat <- dMCDM$dM$dateformat_functionR()
+      dateformat <- dMCDM$dM$formatdateR()
       # function to format date (is reactive)
 
       if (!is.null(billings_cdm_list()) &

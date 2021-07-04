@@ -392,7 +392,7 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
     }
 
     # `dateformat` is a function to convert dates into desired date format
-    dateformat <- self$dM$dateformat_function()
+    dateformat <- self$dM$formatdate()
 
     return_empty_dataframe <- function(intID, screentag, screentag_print) {
       if (is.null(intID)) {

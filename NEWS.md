@@ -8,6 +8,7 @@
 * Filter `billings_cdm` by item status ('Never', 'Late', 'Up-to-date')
   + `item_status` list of status types defined as global in `CDM.R`
   + extra parameter `itemstatus_chosen` added to `billings_cdm`
+  + suggestion of Dat Le, thanks
 * `cdm_tem` and `cdm_item_names` defined as global in `CDM.R`
 
 ## Changes

@@ -1,5 +1,20 @@
 # News
 
+# 0.5.2
+3rd July 2021
+
+## New
+
+* Filter `billings_cdm` by item status ('Never', 'Late', 'Up-to-date')
+  + `item_status` list of status types defined as global in `CDM.R`
+  + extra parameter `itemstatus_chosen` added to `billings_cdm`
+  + suggestion of Dat Le, thanks
+* `cdm_tem` and `cdm_item_names` defined as global in `CDM.R`
+
+## Changes
+
+* `dM$dateformat_choice` changes display format of dates
+
 # 0.5.1
 2nd December 2020
 

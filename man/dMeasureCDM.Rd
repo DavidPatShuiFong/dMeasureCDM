@@ -14,6 +14,10 @@ dMeasureCDM class
 \itemize{
 \item \href{#method-new}{\code{dMeasureCDM$new()}}
 \item \href{#method-aha75_list_cdm}{\code{dMeasureCDM$aha75_list_cdm()}}
+\item \href{#method-aha4549_list_cdm}{\code{dMeasureCDM$aha4549_list_cdm()}}
+\item \href{#method-haatsi_list_cdm}{\code{dMeasureCDM$haatsi_list_cdm()}}
+\item \href{#method-haiq_list_cdm}{\code{dMeasureCDM$haiq_list_cdm()}}
+\item \href{#method-refugeeAsylum_list_cdm}{\code{dMeasureCDM$refugeeAsylum_list_cdm()}}
 \item \href{#method-diabetes_list_cdm}{\code{dMeasureCDM$diabetes_list_cdm()}}
 \item \href{#method-asthma_list_cdm}{\code{dMeasureCDM$asthma_list_cdm()}}
 \item \href{#method-malignancy_list_cdm}{\code{dMeasureCDM$malignancy_list_cdm()}}
@@ -46,6 +50,42 @@ dMeasureCDM class
 \subsection{Method \code{aha75_list_cdm()}}{
 \subsection{Usage}{
 \if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$aha75_list_cdm(intID_list)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-aha4549_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-aha4549_list_cdm}{}}}
+\subsection{Method \code{aha4549_list_cdm()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$aha4549_list_cdm(intID_list)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-haatsi_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-haatsi_list_cdm}{}}}
+\subsection{Method \code{haatsi_list_cdm()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$haatsi_list_cdm(intID_list)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-haiq_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-haiq_list_cdm}{}}}
+\subsection{Method \code{haiq_list_cdm()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$haiq_list_cdm(intID_list)}\if{html}{\out{</div>}}
+}
+
+}
+\if{html}{\out{<hr>}}
+\if{html}{\out{<a id="method-refugeeAsylum_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-refugeeAsylum_list_cdm}{}}}
+\subsection{Method \code{refugeeAsylum_list_cdm()}}{
+\subsection{Usage}{
+\if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$refugeeAsylum_list_cdm(intID_list)}\if{html}{\out{</div>}}
 }
 
 }

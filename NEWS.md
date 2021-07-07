@@ -1,5 +1,17 @@
 # News
 
+# 0.6.0
+7th July 2021
+
+* Aboriginal or Torres Strait Islander Health Assessment and age 45-49 year health assessments
+  + `self$haatsi_list_cdm` - those who could qualify for health assessment
+  + `self$ha4549_list_cdm` - those who could qualify for health assessment
+  + suggestion of RN Cathy Xie, thanks
+* Health Assessment for those with intellectual disability
+  + `self$haiq_list_cdm` - those who could qualify for health assessment
+* Refugee/Asylum seeker health assessment
+  + `self$refugeeAsylum_list_cdm` - those who could qualify for health assessment
+  
 # 0.5.2
 3rd July 2021
 
@@ -8,7 +20,7 @@
 * Filter `billings_cdm` by item status ('Never', 'Late', 'Up-to-date')
   + `item_status` list of status types defined as global in `CDM.R`
   + extra parameter `itemstatus_chosen` added to `billings_cdm`
-  + suggestion of Dat Le, thanks
+  + suggestion of RN Dat Le, thanks
 * `cdm_tem` and `cdm_item_names` defined as global in `CDM.R`
 
 ## Changes

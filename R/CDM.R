@@ -105,7 +105,7 @@ dMeasureCDM <- R6::R6Class("dMeasureCDM",
   }
 })
 
-###########################################################
+##### constants #########################################################################
 
 # MBS (medicare benefits schedule) item numbers for CDM
 cdm_item <- data.frame(
@@ -115,18 +115,28 @@ cdm_item <- data.frame(
     2517, 2521, 2525,
     2546, 2552, 2558,
     2700, 2701, 92112, 92124, 92113, 92125,
-    2715, 2717, 92116, 92128, 92117, 92129
+    2715, 2717, 92116, 92128, 92117, 92129,
+    715, 228, 93470, 93479
   ),
   name = c(
     "GPMP", "GPMP", "GPMP", "TCA", "TCA", "TCA", "GPMP R/V", "GPMP R/v", "GPMP R/V",
     "HA", "HA", "HA",
+    # note that the same item numbers 703/705/707 can *also* be used for
+    # 45-49 (or 40-49) health assessment, which will elsewhere be code "HA45"
+    # and *also* for intellectual disability health assessment, elsewhere coded "HAIQ"
+    # and *also* for refugee health asseessment, elsewhere coded  'RHA'
     "DiabetesSIP", "DiabetesSIP", "DiabetesSIP",
     "AsthmaSIP", "AsthmaSIP", "AsthmaSIP",
     "MHCP", "MHCP", "MHCP", "MHCP", "MHCP", "MHCP",
-    "MHCP", "MHCP", "MHCP", "MHCP", "MHCP", "MHCP"
-  )
+    "MHCP", "MHCP", "MHCP", "MHCP", "MHCP", "MHCP",
+    "HAATSI", "HAATSI", "HAATSI", "HAATSI"
+  ),
+  stringsAsFactors = FALSE
 )
-cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored
-# Item claim status
+
+cdm_item_names <- c(as.character(unique(cdm_item$name)), "HA45", "HAIQ", "RHA")
+# de-factored and unique cdm_item$name
+# need to manually add HA45 and HAIQ
+
 item_status <- list(never = "Never", late = "Late", uptodate = "Up-to-date")
 

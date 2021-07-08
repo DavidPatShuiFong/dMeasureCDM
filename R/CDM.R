@@ -121,7 +121,8 @@ cdm_item <- data.frame(
   name = c(
     "GPMP", "GPMP", "GPMP", "TCA", "TCA", "TCA", "GPMP R/V", "GPMP R/v", "GPMP R/V",
     "HA", "HA", "HA",
-    # note that the same item numbers 703/705/707 can *also* be used for
+    # note that the same item numbers 703/705/707 can be used for multiple health assessments
+    # 75+, elsewhere coded as "HA75"
     # 45-49 (or 40-49) health assessment, which will elsewhere be code "HA45"
     # and *also* for intellectual disability health assessment, elsewhere coded "HAIQ"
     # and *also* for refugee health asseessment, elsewhere coded  'RHA'
@@ -134,7 +135,8 @@ cdm_item <- data.frame(
   stringsAsFactors = FALSE
 )
 
-cdm_item_names <- c(as.character(unique(cdm_item$name)), "HA45", "HAIQ", "RHA")
+cdm_item_names <- c(as.character(unique(cdm_item$name)), "HA75", "HA45", "HAIQ", "RHA")
+cdm_item_names <- cdm_item_names[!cdm_item_names == "HA"]
 # de-factored and unique cdm_item$name
 # need to manually add HA45 and HAIQ
 

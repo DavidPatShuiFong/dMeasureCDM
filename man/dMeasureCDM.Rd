@@ -13,8 +13,8 @@ dMeasureCDM class
 \subsection{Public methods}{
 \itemize{
 \item \href{#method-new}{\code{dMeasureCDM$new()}}
-\item \href{#method-aha75_list_cdm}{\code{dMeasureCDM$aha75_list_cdm()}}
-\item \href{#method-aha4549_list_cdm}{\code{dMeasureCDM$aha4549_list_cdm()}}
+\item \href{#method-ha75_list_cdm}{\code{dMeasureCDM$ha75_list_cdm()}}
+\item \href{#method-ha4549_list_cdm}{\code{dMeasureCDM$ha4549_list_cdm()}}
 \item \href{#method-haatsi_list_cdm}{\code{dMeasureCDM$haatsi_list_cdm()}}
 \item \href{#method-haiq_list_cdm}{\code{dMeasureCDM$haiq_list_cdm()}}
 \item \href{#method-refugeeAsylum_list_cdm}{\code{dMeasureCDM$refugeeAsylum_list_cdm()}}
@@ -45,20 +45,20 @@ dMeasureCDM class
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-aha75_list_cdm"></a>}}
-\if{latex}{\out{\hypertarget{method-aha75_list_cdm}{}}}
-\subsection{Method \code{aha75_list_cdm()}}{
+\if{html}{\out{<a id="method-ha75_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-ha75_list_cdm}{}}}
+\subsection{Method \code{ha75_list_cdm()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$aha75_list_cdm(intID_list)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$ha75_list_cdm(intID_list)}\if{html}{\out{</div>}}
 }
 
 }
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-aha4549_list_cdm"></a>}}
-\if{latex}{\out{\hypertarget{method-aha4549_list_cdm}{}}}
-\subsection{Method \code{aha4549_list_cdm()}}{
+\if{html}{\out{<a id="method-ha4549_list_cdm"></a>}}
+\if{latex}{\out{\hypertarget{method-ha4549_list_cdm}{}}}
+\subsection{Method \code{ha4549_list_cdm()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$aha4549_list_cdm(intID_list)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{dMeasureCDM$ha4549_list_cdm(intID_list)}\if{html}{\out{</div>}}
 }
 
 }

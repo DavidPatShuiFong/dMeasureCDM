@@ -1,7 +1,9 @@
 # News
 
 # 0.6.0
-7th July 2021
+8th July 2021
+
+## New
 
 * Aboriginal or Torres Strait Islander Health Assessment and age 45-49 year health assessments
   + `self$haatsi_list_cdm` - those who could qualify for health assessment
@@ -11,6 +13,11 @@
   + `self$haiq_list_cdm` - those who could qualify for health assessment
 * Refugee/Asylum seeker health assessment
   + `self$refugeeAsylum_list_cdm` - those who could qualify for health assessment
+  
+## Changes
+
+* Aged 75+ Health Assessment renamed to `self$ha75_list_cdm`
+  + display 'code' changed from 'HA' to 'HA75'
   
 # 0.5.2
 3rd July 2021

@@ -805,6 +805,10 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
       }
 
       billings_list <- billings_list %>>%
+        dplyr::left_join( # adds 'Age' to billings list
+          intID_list,
+          by = c("InternalID", "AppointmentDate", "AppointmentTime", "Provider")) %>>%
+        # need to multiple match, either multiple duplicates will result if a patient has more than one appointment
         dplyr::mutate(
           itemstatus =
             dplyr::if_else(
@@ -818,11 +822,12 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
                 # HAATSI can be repeated every nine months
                 dMeasure::interval(ServiceDate, AppointmentDate, unit = "month")$month < 12 ~ item_status$uptodate,
                 # other items can be repeated every twelve months
-                MBSName == "HA45" & dMeasure::interval(ServiceDate, AppointmentDate, unit = "month")$month >= 120 ~ item_status$never,
-                # A health assessment done ten years previously cannot be a 45-49 health assessment if patient currently qualifies
-                # for a 45-49 health assessment
-                MBSName == "HA45" & dMeasure::interval(ServiceDate, AppointmentDate, unit = "month")$month >= 60 ~ item_status$late,
+                MBSName == "HA45" & (Age - dMeasure::interval(ServiceDate, AppointmentDate)$year < 45) ~ item_status$late,
                 # Status of health assessment uncertain.
+                # A health assessment done before the age of 40 cannot be a 45-49 (or 40-49) health assessment
+                # this is an approximation, because the data.frame doesn't have the exact date of birth
+                # the health assessment before the age of 40 is probably a refugee, intellectual disability or veteran HA
+                # (best not to 'drop' the health assessment date with a 'never' status)
                 # Previous HA possibly a 40-44 (high risk diabetes) health assessment (which could be repeated after 3 years)
                 # Previous HA could also be a refugee health assessment or veteran health assessment
                 MBSName == "HA45" ~ item_status$uptodate,
@@ -837,6 +842,7 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
               )
             )
         ) %>>%
+        dplyr::select(-Age) %>>% # remove the 'Age' column
         dplyr::filter(
           itemstatus %in% itemstatus_chosen
         )

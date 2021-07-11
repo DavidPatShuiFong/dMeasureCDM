@@ -1,7 +1,7 @@
 # News
 
 # 0.6.0
-8th July 2021
+11th July 2021
 
 ## New
 

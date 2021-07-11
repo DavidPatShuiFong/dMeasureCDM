@@ -6,38 +6,90 @@
 #' 'tags only' fomantic/semantic definitions
 NULL
 
-##### constants #########################################################################
-# MBS (medicare benefits schedule) item numbers for CDM
-cdm_item <- data.frame(
-  code = c(
-    721, 92024, 92068, 723, 92025, 92069, 732, 92028, 92072,
-    703, 705, 707,
-    2517, 2521, 2525,
-    2546, 2552, 2558,
-    2700, 2701, 92112, 92124, 92113, 92125,
-    2715, 2717, 92116, 92128, 92117, 92129
-  ),
-  name = c(
-    "GPMP", "GPMP", "GPMP", "TCA", "TCA", "TCA", "GPMP R/V", "GPMP R/v", "GPMP R/V",
-    "HA", "HA", "HA",
-    "DiabetesSIP", "DiabetesSIP", "DiabetesSIP",
-    "AsthmaSIP", "AsthmaSIP", "AsthmaSIP",
-    "MHCP", "MHCP", "MHCP", "MHCP", "MHCP", "MHCP",
-    "MHCP", "MHCP", "MHCP", "MHCP", "MHCP", "MHCP"
-  )
-)
-
-cdm_item_names <- as.character(unique(cdm_item$name)) # de-factored and unique cdm_item$name
-
 ##### fields ############################################################################
 
 ### AHA 75 (annual health assessment for those aged 75 years and above)
-.public(dMeasureCDM, "aha75_list_cdm", function(intID_list) {
+.public(dMeasureCDM, "ha75_list_cdm", function(intID_list) {
   intID_list %>>%
     dplyr::filter(Age >= 75) %>>%
     dplyr::select(c("InternalID", "AppointmentDate", "AppointmentTime", "Provider")) %>>%
     dplyr::mutate(
-      MBSName = c("HA"), Description = c("Age 75 years or older"),
+      MBSName = c("HA75"), Description = c("Age 75 years or older"),
+      ServiceDate = as.Date(-Inf, origin = "1970-01-01"), MBSItem = NA
+    ) %>>%
+    unique()
+})
+
+### HA 45 to 49 year age group
+# can only be done once
+# unless risk of diabetes, in which case can be done 3 yearly between age of 40 to 49
+.public(dMeasureCDM, "ha4549_list_cdm", function(intID_list) {
+  intID_list %>>%
+    dplyr::filter(Age >= 45 & Age <= 49) %>>%
+    dplyr::select(c("InternalID", "AppointmentDate", "AppointmentTime", "Provider")) %>>%
+    dplyr::mutate(
+      MBSName = c("HA45"), Description = c("Age 45 to 49 years"),
+      ServiceDate = as.Date(-Inf, origin = "1970-01-01"), MBSItem = NA
+    ) %>>%
+    unique()
+})
+
+### HA Aboriginal or Torres Strait Islander
+.public(dMeasureCDM, "haatsi_list_cdm", function(intID_list) {
+
+  atsiID <- intID_list %>>%
+    dplyr::select("InternalID") %>>%
+    dplyr::mutate(Date = as.Date(-Inf, origin = "1970-01-01")) %>>%
+    # dummy dates
+    self$dM$atsi_list()
+  # InternalID codes which have recorded Aboriginal or Torres Strait Islander status
+
+  intID_list %>>%
+    # no age criteria required
+    dplyr::filter(InternalID %in% atsiID) %>>%
+    dplyr::select(c("InternalID", "AppointmentDate", "AppointmentTime", "Provider")) %>>%
+    dplyr::mutate(
+      MBSName = c("HAATSI"), Description = c("Aboriginal or Torres Strait Islander"),
+      ServiceDate = as.Date(-Inf, origin = "1970-01-01"), MBSItem = NA
+    ) %>>%
+    unique()
+})
+
+### HA intellectual disability
+.public(dMeasureCDM, "haiq_list_cdm", function(intID_list) {
+
+  iqID <- intID_list %>>%
+    dplyr::select("InternalID") %>>%
+    dplyr::mutate(Date = as.Date(-Inf, origin = "1970-01-01")) %>>%
+    # dummy dates
+    self$dM$intellectualDisability_list()
+
+  intID_list %>>%
+    dplyr::filter(Age < 75) %>>% # if age >= 75 then HA75 'dominates'
+    dplyr::filter(InternalID %in% iqID) %>>%
+    dplyr::select(c("InternalID", "AppointmentDate", "AppointmentTime", "Provider")) %>>%
+    dplyr::mutate(
+      MBSName = c("HAIQ"), Description = c("Intellectual Disability"),
+      ServiceDate = as.Date(-Inf, origin = "1970-01-01"), MBSItem = NA
+    ) %>>%
+    unique()
+})
+
+### refugee health assessment
+.public(dMeasureCDM, "refugeeAsylum_list_cdm", function(intID_list) {
+
+  refugeeAsylumID <- intID_list %>>%
+    dplyr::select("InternalID") %>>%
+    dplyr::mutate(Date = as.Date(-Inf, origin = "1970-01-01")) %>>%
+    # dummy dates
+    self$dM$refugeeAsylum_list()
+
+  intID_list %>>%
+    # no age criteria (though if age > 75 then RHA is not relevant for billing purposes)
+    dplyr::filter(InternalID %in% refugeeAsylumID) %>>%
+    dplyr::select(c("InternalID", "AppointmentDate", "AppointmentTime", "Provider")) %>>%
+    dplyr::mutate(
+      MBSName = c("RHA"), Description = c("Refugee or Asylum Seeker"),
       ServiceDate = as.Date(-Inf, origin = "1970-01-01"), MBSItem = NA
     ) %>>%
     unique()
@@ -519,6 +571,12 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
           )
         )) %>>%
         dplyr::mutate(MBSName = cdm_item$name[match(MBSItem, cdm_item$code)])
+      # note that this does not immediately deal with the problem that there are several types
+      # of health assessment (HA for those 75+ and HA for age 40/45 to 59, HA for intellectual
+      # disability and refugee health assessment)
+      # which all use the same billings codes (703/705/707). All of these groups are, at this stage,
+      # ooded 'HA'.
+      # this problem is dealt with later, when we have the ages for each of the 'InternalID'
 
       if ("GPMP R/V" %in% cdm_chosen) {
         gpmprv <- billings_list %>>%
@@ -633,6 +691,69 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
         }
       }
 
+      # now we have the ages for each of the InternalID in intID_list
+      # up to now, HA for 75+, HA for intellectual disability, refugee HA
+      #  and HA for 40/45 to 49 have all been coded 'HA'
+      # since they share the same billings codes
+      # now try to differentiate on the basis of age and past history
+      if (!x$changedate) { # only search if valid subscription!
+        # find the list of patients who have intellectual disability or refugee/asylum seeker
+        intellectualDisabilityID <- intID_list %>>%
+          dplyr::distinct(InternalID) %>>% # this also drops other columns
+          dplyr::mutate(AppointmentDate = Sys.Date()) %>>%
+          self$dM$intellectualDisability_list() # returns vector of InternalID
+        refugeeAsylumID <- intID_list %>>%
+          dplyr::distinct(InternalID) %>>% # this also drops other columns
+          dplyr::mutate(AppointmentDate = Sys.Date()) %>>%
+          self$dM$refugeeAsylum_list() # returns vector of InternalID
+
+        billings_list <- billings_list %>>%
+          dplyr::left_join(
+            intID_list,
+            by = c("InternalID", "AppointmentDate", "AppointmentTime", "Provider")) %>>%
+          # need to multiple match, either multiple duplicates will result if a patient has more than one appointment
+          dplyr::mutate(
+            MBSName = dplyr::if_else(
+              MBSName == "HA" & Age >= 75,
+              "HA75", # aged 75+ health assessment
+              MBSName
+            )
+          ) %>>%
+          dplyr::mutate(
+            MBSName = dplyr::if_else(
+              MBSName == "HA" & InternalID %in% intellectualDisabilityID,
+              "HAIQ", # intellectual disability health assessment
+              MBSName
+            )
+          ) %>>%
+          dplyr::mutate(
+            MBSName = dplyr::if_else(
+              MBSName == "HA" & Age >= 45 & Age <= 49,
+              # this is based on age at appointment
+              # calculation is not entirely accurate,
+              # because the *age at billing* of the health assessment
+              # will most likely be less (in terms of days) than age on appointment day
+              "HA45",
+              MBSName
+            )
+          ) %>>%
+          dplyr::mutate(
+            MBSName = dplyr::if_else(
+              MBSName == "HA" & InternalID %in% refugeeAsylumID & Age < 75,
+              # refugee health assessment possible (superseded by Aged HA if age 75+)
+              "RHA",
+              MBSName
+            )
+          ) %>>%
+          dplyr::filter(
+           !(MBSName == "HA" & ((Age >= 50 & Age < 75) | Age < 40))
+           # these health assessments are probably 'old' health assessments
+           # done for 40-49 age group
+           # or *possibly* old refugee health assessments or veterans health assessments
+          ) %>>%
+          dplyr::select(-Age)
+      }
+
       if (!x$changedate) { # only search if valid subscription!
         billings_list <- billings_list %>>%
           dplyr::filter(!(MBSName == "GPMP R/V")) %>>% # GPMP R/V will be added back in as a 'tagged' version
@@ -646,10 +767,31 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
           rbind(self$chronicliverdisease_list_cdm(intID_list)) %>>%
           rbind(self$chronicrenaldisease_list_cdm(intID_list)) %>>%
           rbind(self$chroniclungdisease_list_cdm(intID_list)) %>>%
-          rbind(self$neurologic_list_cdm(intID_list)) %>>%
           rbind(self$trisomy21_list_cdm(intID_list)) %>>%
-          rbind(self$cardiacdisease_list_cdm(intID_list)) %>>%
-          rbind(self$aha75_list_cdm(intID_list)) %>>%
+          rbind(self$cardiacdisease_list_cdm(intID_list))
+
+        if ("HA75" %in% cdm_chosen) {
+          billings_list <- billings_list %>>%
+            rbind(self$ha75_list_cdm(intID_list))
+        }
+        if ("HA45" %in% cdm_chosen) {
+          billings_list <- billings_list %>>%
+            rbind(self$ha4549_list_cdm(intID_list))
+          }
+        if ("HAATSI" %in% cdm_chosen) {
+          billings_list <- billings_list %>>%
+          rbind(self$haatsi_list_cdm(intID_list))
+        }
+        if ("HAIQ" %in% cdm_chosen) {
+          billings_list <- billings_list %>>%
+          rbind(self$haiq_list_cdm(intID_list))
+        }
+        if ("RHA" %in% cdm_chosen) {
+          # intellectual disability
+          billings_list <- billings_list %>>%
+            rbind(self$refugeeAsylum_list_cdm(intID_list))
+        }
+        billings_list <- billings_list %>>%
           dplyr::filter(MBSName %in% cdm_chosen) %>>%
           dplyr::group_by(InternalID, AppointmentDate, AppointmentTime, Provider, MBSName) %>>%
           # group by patient, appointment and CDM type (name)
@@ -663,19 +805,44 @@ billings_cdm <- function(dMeasureCDM_obj, date_from = NA, date_to = NA, clinicia
       }
 
       billings_list <- billings_list %>>%
+        dplyr::left_join( # adds 'Age' to billings list
+          intID_list,
+          by = c("InternalID", "AppointmentDate", "AppointmentTime", "Provider")) %>>%
+        # need to multiple match, either multiple duplicates will result if a patient has more than one appointment
         dplyr::mutate(
           itemstatus =
             dplyr::if_else(
               ServiceDate == -Inf,
               item_status$never,
               # invalid date is '-Inf', means item not claimed yet
-              dplyr::if_else(
-                dMeasure::interval(ServiceDate, AppointmentDate)$year < 1,
-                item_status$uptodate,
-                item_status$late
+              dplyr::case_when(
+                dMeasure::interval(ServiceDate, AppointmentDate, unit = "month")$month < 9 ~ item_status$uptodate,
+                # all of these items (not GPMP r/v) are 'up to date' if less than 9 months
+                MBSName == "HAATSI" ~ item_status$late,
+                # HAATSI can be repeated every nine months
+                dMeasure::interval(ServiceDate, AppointmentDate, unit = "month")$month < 12 ~ item_status$uptodate,
+                # other items can be repeated every twelve months
+                MBSName == "HA45" & (Age - dMeasure::interval(ServiceDate, AppointmentDate)$year < 45) ~ item_status$late,
+                # Status of health assessment uncertain.
+                # A health assessment done before the age of 40 cannot be a 45-49 (or 40-49) health assessment
+                # this is an approximation, because the data.frame doesn't have the exact date of birth
+                # the health assessment before the age of 40 is probably a refugee, intellectual disability or veteran HA
+                # (best not to 'drop' the health assessment date with a 'never' status)
+                # Previous HA possibly a 40-44 (high risk diabetes) health assessment (which could be repeated after 3 years)
+                # Previous HA could also be a refugee health assessment or veteran health assessment
+                MBSName == "HA45" ~ item_status$uptodate,
+                # can only (usually) claim HA45-49 once
+                # HA40-49 *can* be claimed three yearly if there is a high risk of diabetes
+                # unfortunately, HA40-49 use the *same* item codes as not only HA75+
+                # but HA for intellectual disability, refugee HA or defence force HA
+                MBSName == "RHA" ~ item_status$uptodate,
+                # refugee health assessment can only be claimed once
+                TRUE ~ item_status$late
+                # otherwise the item is late
               )
             )
         ) %>>%
+        dplyr::select(-Age) %>>% # remove the 'Age' column
         dplyr::filter(
           itemstatus %in% itemstatus_chosen
         )
